@@ -12,12 +12,16 @@ const limiter = rateLimit({
     message: "Too many drip requested from this IP, please try again in 24Hrs"
   });
 
+app.use(express.static('public'))
 app.use(cors())
 app.use(express.json());       // to support JSON-encoded bodies
 app.post('/faucetRequest', limiter, (req, res) => {
     const response = iterator.handleFaucetRequest(req.body.address)
     res.send(response)
 })
+
+app.get('/', (req, res) => {
+});
 
 iterator.runner()
 
