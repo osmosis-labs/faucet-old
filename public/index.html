@@ -1,12 +1,88 @@
 <html>
   <head>
     <title>Osmosis Testnet Faucet</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+  
   </head>
   <body>
-    <h3>Osmosis Test Faucet</h3>
-    <p>UI coming soon. In the meantime you can make a request like this:</p>
-    <pre>
-      curl -d '{"address":"osmo1a5h27j38jqe9ehqa95cjcm7vg05n56um0lufmj"}' -H 'Content-Type: application/json' https://testnet-faucet.dev-osmosis.zone/faucetRequest
-    </pre>
+    <section id="app" class="section">
+
+      <h1 class="title is-1" v-text="form.formName"></h1>
+  
+      <div class="columns">
+          <div class="column">
+              <form>
+                  <div class="field">
+                      <label class="label">Osmosis Address</label>
+                      <div class="control">
+                          <input class="input" type="text" v-model="form.payload.address" />
+                      </div>
+                  </div>
+                  <input class="button is-primary margin-bottom" type="submit" @click.prevent="Submit" />
+              </form>
+  
+              <transition name="fade" mode="out-in">
+                  <div v-show="alert.show" class="notification"
+                  :class="alert.status == 'error' ? 'is-warning' : 'is-success'"
+                  >
+                  {{alert.message}}
+                </div>
+              </transition>
+          </div>
+          <div class="column">
+              <h5>
+                  JSON
+              </h5>
+              <pre><code>{{form}}</code></pre>
+              <pre><code>{{alert}}</code></pre>
+          </div>
+      </div>
+  
+  </section>
+
   </body>
+  <script>
+    new Vue({
+    el: "#app",
+    data: {
+      form: {
+          formName: "Osmosis Test Faucet",
+          endpoint: "http://localhost/faucetRequest",
+          payload: {
+            address: "",
+        }
+      },
+        alert: {
+          status:"",
+          show :false,
+          message: ""
+        }
+    },
+    methods: {
+        Submit() {
+                  axios.post(this.form.endpoint, {
+                    address: this.form.payload.address,
+                  })
+                  .then(response => {
+                    console.log(response);
+                    this.alert.status = response.data.result.status;
+                    this.alert.message = response.data.result.message;
+                    this.alert.show = true;
+                  })
+                  .catch(error => {
+                    console.log(error);
+                    this.alert.status = "error"
+                    this.alert.message = error;
+                    this.alert.show = true;
+                  });
+            setTimeout(() => {
+              this.alert.show =false;
+            }, 6000);
+        }
+    }
+});
+
+  </script>
 </html>

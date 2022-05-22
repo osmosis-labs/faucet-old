@@ -92,13 +92,13 @@ function handleFaucetRequest(userAddress) {
             accountResponse.code === 5) {
             constants.FaucetList.push(userAddress);
             console.log(userAddress, "ADDED TO LIST: total = ", constants.FaucetList.length);
-            return JSON.stringify({result: "Success, your address will be faucet"});
+            return JSON.stringify({result: {status:"success",message:"Success, your address will recieve funds shortly"}});
         } else {
             console.log(userAddress, "NOT ADDED: total = ", constants.FaucetList.length);
-            return JSON.stringify({result: "Failure, your account cannot be faucet right now, please try after sometime"});
+            return JSON.stringify({result: {status:"error",message:"Your account cannot get funds at this time."}});
         }
     } catch (e) {
-        return JSON.stringify({result:"Failure, Incorrect Address"});
+        return JSON.stringify({result: {status:"error",message:"Invalid address."}});
     }
 
 }
