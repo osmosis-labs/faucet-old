@@ -75,7 +75,7 @@
     el: "#app",
     data: {
       form: {
-          formName: "Osmosis Test Faucet",
+          formName: "Osmosis Testnet Faucet",
           endpoint: "http://localhost/faucetRequest",
           payload: {
             address: "",
@@ -94,8 +94,8 @@
                   })
                   .then(response => {
                     console.log(response);
-                    this.alert.status = response.data.result.status;
-                    this.alert.message = response.data.result.message;
+                    this.alert.status = response.data.status;
+                    this.alert.message = response.data.message;
                     this.alert.show = true;
                   })
                   .catch(error => {
