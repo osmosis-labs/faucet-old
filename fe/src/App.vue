@@ -97,10 +97,10 @@ form: {
 }
  body {
       background-image: url("assets/bk.jpg");
-      background-size: cover;
-      color: #fff;
-      font-family: 'Prompt', sans-serif;
-      background-color: #241e45;
+      background-size: cover!important !important;
+      color: #fff !important;
+      font-family: 'Prompt', sans-serif !important;
+      background-color: #241e45 !important;
   }
   .card {
     background-color: rgba(255, 255, 255, 0.3) !important;
@@ -111,18 +111,15 @@ form: {
     padding: 10px!important;
     color: #fff!important;
   }
-  .button.is-primary {
-    background-color: #6500d1;
-  }
   .btn-info {
-    background-color: rgb(50, 45, 194);
-    border: none;
-    cursor: pointer;
-    color: white;;
+    background-color: rgb(50, 45, 194) !important;
+    border: none !important;
+    cursor: pointer !important;
+    color: white !important;
   }
   .btn-info:hover,.btn-info:hover,.btn-info:focus{
     background-color: rgb(40, 37, 132);
-    color: white;
-    border: none;
+    color: white !important;
+    border: none !important;
   }
 </style>
