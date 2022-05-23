@@ -101,16 +101,15 @@ form: {
       color: #fff;
       font-family: 'Prompt', sans-serif;
       background-color: #241e45;
-
   }
   .card {
-    background-color: rgba(255, 255, 255, 0.3);
- -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  border-radius: 5pt;
-  border: 0px;
-  padding: 10px;
-color: #fff;
+    background-color: rgba(255, 255, 255, 0.3) !important;
+    -webkit-backdrop-filter: blur(10px)!important;
+    backdrop-filter: blur(10px)!important;
+    border-radius: 5pt!important;
+    border: 0px!important;
+    padding: 10px!important;
+    color: #fff!important;
   }
   .button.is-primary {
     background-color: #6500d1;
