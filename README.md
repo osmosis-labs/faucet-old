@@ -21,6 +21,7 @@ npm start
 npm install pm2@latest -g
 pm2 start
 ```
+To restart use after downloading latest changes from repo `pm2 restart server`
 
 Use the following command to faucet tokens into your wallet address:
 
