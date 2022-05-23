@@ -3,21 +3,25 @@
     <title>Osmosis Testnet Faucet</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="bootstrap.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
   <style>
-    .hero.is-primary {
-      background-image: url("https://cdnb.artstation.com/p/assets/images/images/036/465/021/large/samuel-inkilainen-laboratory.jpg?1617745012");
+    body {
+      background-image: url("bk.jpg");
       background-size: cover;
       color: #fff;
       font-family: 'Prompt', sans-serif;
-      background-color: #6500d1;
+      background-color: #241e45;
 
   }
-  .box {
+  .card {
     background-color: rgba(255, 255, 255, 0.3);
  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
-  color: #fff;
+  border-radius: 5pt;
+  border: 0px;
+  padding: 10px;
+
   }
   .button.is-primary {
     background-color: #6500d1;
@@ -25,47 +29,59 @@
   </style>
   </head>
   <body>
-    <section class="hero is-primary is-fullheight" id="app" >
-      <div class="hero-body">
-        <div class="container">
-          <div class="columns is-centered">
-            <div class="column is-5-tablet is-6-desktop is-6-widescreen">
-              <h1 class="title is-3" v-text="form.formName"></h1>
-              
-              <form class="box">
-                <div class="field">
-                    <label class="label">Osmosis Address</label>
-                    <div class="control">
-                        <input class="input" type="text" v-model="form.payload.address" />
-                    </div>
-                </div>
-                <input class="button is-primary margin-bottom" type="submit" @click.prevent="Submit" />
-            </form>
+<!-- Login Form -->
+<div class="container" id="app">
+  <div class="row justify-content-center mt-5">
+    <div class="col-lg-4 col-md-6 col-sm-6">
+      <div class="card shadow">
+        <div >
+          <h4 class="p-3" >{{form.formName}}</h2>
 
-            <transition name="fade" mode="out-in">
-                <div v-show="alert.show" class="notification"
-                :class="alert.status == 'error' ? 'is-warning' : 'is-success'"
-                >
-                {{alert.message}}
-              </div>
-            </transition>
-
-             <section class="">
-              <h5 class="is-black">
-                JSON 
-            </h5>
-            <pre class="box"><code>
-              {{form}}
-              {{alert}}
-            </code></pre>
-
-             </section>
-
+        </div>
+        <div class="card-body">
+          <form>
+            <div class="mb-4">
+              <label for="username" class="form-label">Osmosis Address</label>
+              <input class="form-control" type="text" v-model="form.payload.address" />
             </div>
+            <div class="d-grid">
+              <input class="form-control btn btn-info" type="submit" @click.prevent="Submit" />
+            </div>
+          </form>
+          <div v-show="alert.show" class="alert "
+                :class="alert.status == 'error' ? 'alert-warning' : 'alert-success'"
+                >
+                <h5 class="alert-heading text-capitalize"> {{alert.status}}</h4>
+                <p class="mb-0"> {{alert.message}}</p>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </div>
+  <div class="row">
+
+    <p class="text-center">
+      <a class="btn btn-info btn-sm mt-3" data-bs-toggle="collapse" href="#collapse" role="button" aria-expanded="false" aria-controls="collapse">
+      State
+      </a>
+      <a class="btn btn-success btn-sm mt-3" href="https://docs.osmosis.zone/developing/network/public-endpoints.html#official-endpoints" target="_blank">
+        Network Docs
+      </a> 
+    </p>
+    <div class="collapse" id="collapse">
+      <div class="card card-body">
+        <pre class=""><code>
+          {{form}}
+          {{alert}}
+        </code></pre>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+
 
 
 
