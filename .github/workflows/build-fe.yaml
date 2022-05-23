@@ -13,7 +13,8 @@ jobs:
 
       - name: Install and Build 🔧
         run: |
-          cd fe 
+          cd fe
+          npm install
           npm run build
 
       - name: Deploy to Github Pages 🚀
