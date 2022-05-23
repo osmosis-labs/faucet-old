@@ -4,43 +4,70 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
-  
+  <style>
+    .hero.is-primary {
+      background-image: url("https://cdnb.artstation.com/p/assets/images/images/036/465/021/large/samuel-inkilainen-laboratory.jpg?1617745012");
+      background-size: cover;
+      color: #fff;
+      font-family: 'Prompt', sans-serif;
+      background-color: #6500d1;
+
+  }
+  .box {
+    background-color: rgba(255, 255, 255, 0.3);
+ -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  }
+  .button.is-primary {
+    background-color: #6500d1;
+  }
+  </style>
   </head>
   <body>
-    <section id="app" class="section">
-
-      <h1 class="title is-1" v-text="form.formName"></h1>
-  
-      <div class="columns">
-          <div class="column">
-              <form>
-                  <div class="field">
-                      <label class="label">Osmosis Address</label>
-                      <div class="control">
-                          <input class="input" type="text" v-model="form.payload.address" />
-                      </div>
-                  </div>
-                  <input class="button is-primary margin-bottom" type="submit" @click.prevent="Submit" />
-              </form>
-  
-              <transition name="fade" mode="out-in">
-                  <div v-show="alert.show" class="notification"
-                  :class="alert.status == 'error' ? 'is-warning' : 'is-success'"
-                  >
-                  {{alert.message}}
+    <section class="hero is-primary is-fullheight" id="app" >
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns is-centered">
+            <div class="column is-5-tablet is-6-desktop is-6-widescreen">
+              <h1 class="title is-3" v-text="form.formName"></h1>
+              
+              <form class="box">
+                <div class="field">
+                    <label class="label">Osmosis Address</label>
+                    <div class="control">
+                        <input class="input" type="text" v-model="form.payload.address" />
+                    </div>
                 </div>
-              </transition>
+                <input class="button is-primary margin-bottom" type="submit" @click.prevent="Submit" />
+            </form>
+
+            <transition name="fade" mode="out-in">
+                <div v-show="alert.show" class="notification"
+                :class="alert.status == 'error' ? 'is-warning' : 'is-success'"
+                >
+                {{alert.message}}
+              </div>
+            </transition>
+
+             <section class="">
+              <h5 class="is-black">
+                JSON 
+            </h5>
+            <pre class="box"><code>
+              {{form}}
+              {{alert}}
+            </code></pre>
+
+             </section>
+
+            </div>
           </div>
-          <div class="column">
-              <h5>
-                  JSON
-              </h5>
-              <pre><code>{{form}}</code></pre>
-              <pre><code>{{alert}}</code></pre>
-          </div>
+        </div>
       </div>
-  
-  </section>
+    </section>
+
+
 
   </body>
   <script>
@@ -83,6 +110,5 @@
         }
     }
 });
-
   </script>
 </html>
