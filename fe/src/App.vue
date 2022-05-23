@@ -97,7 +97,7 @@ form: {
 }
  body {
       background-image: url("assets/bk.jpg");
-      background-size: cover!important !important;
+      background-size: cover!important;
       color: #fff !important;
       font-family: 'Prompt', sans-serif !important;
       background-color: #241e45 !important;
