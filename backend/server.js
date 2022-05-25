@@ -3,26 +3,26 @@ const express = require('express')
 const app = express()
 const port = process.env.SERVER_PORT
 const cors = require('cors')
-const rateLimit = require("express-rate-limit")
 const constants = require("./constants")
 
-
-const limiter = rateLimit({
-    windowMs: constants.IP_WINDOW, // 24 hours
-    max: constants.IP_DRIP_LIMIT, // limit each IP to 10 requests per windowMs
-    message: "Too many drip requested from this IP, please try again in 24Hrs"
-  });
+// const limitReached = (req: express.request, res: express.response) => {
+//     log.warn({ ip: req.ip }, 'Unfriendly rate limiter triggered')
+//     res.status(429).send('Too many requests. Try again later.')
+// }
 
 app.use(express.static('public'))
 app.use(cors())
 app.use(express.json());       // to support JSON-encoded bodies
-app.post('/faucetRequest', limiter, (req, res) => {
-    const response = iterator.handleFaucetRequest(req.body.address)
+app.post('/faucetRequest', async (req, res) => {
+    try {
+    const response = await iterator.handleFaucetRequest(req)
+    console.log("RES::::");
+    console.log(response);
     res.send(response)
+    } catch (error) {
+        console.log(error)
+    }
 })
-
-app.get('/', (req, res) => {
-});
 
 iterator.runner()
 
