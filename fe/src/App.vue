@@ -16,27 +16,33 @@
               <input class="form-control btn btn-info" type="submit" @click.prevent="Submit" />
             </div>
           </form>
-          <div v-show="alert.show" class="alert "
-                :class="alert.status == 'error' ? 'alert-warning' : 'alert-success'"
-                >
-                <h5 class="alert-heading text-capitalize"> {{alert.status}}</h5>
-                <p class="mb-0"> {{alert.message}}</p>
-          </div>
         </div>
       </div>
+
+      <b-alert v-model="alert.show"  dismissible >
+        {{alert.message}}
+      </b-alert>
     </div>
+
+
     </div>
-<div class="row justify-content-center mt-5">
-<div class="col col-lg-6">
-<b-button v-b-toggle.collapse-1 variant="primary">State</b-button>
-<b-button  variant="info" href="https://docs.osmosis.zone/developing/network/public-endpoints.html#official-endpoints" target="_blank">Network Docs</b-button>
-    <b-collapse id="collapse-1" class="mt-2">
-      <b-card>
-          <pre><code> {{form}} {{alert}} </code></pre></b-card>
-      </b-card>
-    </b-collapse>
-</div>
-</div>
+
+
+
+
+
+
+<!--    <div class="row justify-content-center mt-5">-->
+<!--    <div class="col col-lg-6">-->
+<!--    <b-button v-b-toggle.collapse-1 variant="primary">State</b-button>-->
+<!--    <b-button  variant="info" href="https://docs.osmosis.zone/developing/network/public-endpoints.html#official-endpoints" target="_blank">Network Docs</b-button>-->
+<!--        <b-collapse id="collapse-1" class="mt-2">-->
+<!--          <b-card>-->
+<!--              <pre><code> {{form}} {{alert}} </code></pre>-->
+<!--          </b-card>-->
+<!--        </b-collapse>-->
+<!--    </div>-->
+<!--    </div>-->
 
 </div>
 </template>
@@ -48,12 +54,13 @@ export default {
   data() { return {
 form: {
           formName: "Osmosis Testnet Faucet",
-          endpoint: "https://testnet-faucet.dev-osmosis.zone/faucetRequest",
+          endpoint: "http://localhost/faucetRequest",
           payload: {
             address: "",
         }
       },
         alert: {
+          show: false,
           status:"",
           show :false,
           message: ""
@@ -78,9 +85,7 @@ form: {
                     this.alert.message = error;
                     this.alert.show = true;
                   });
-            setTimeout(() => {
-              this.alert.show =false;
-            }, 6000);
+
         }
     }
 }
@@ -111,15 +116,35 @@ form: {
     padding: 10px!important;
     color: #fff!important;
   }
-  .btn-info {
-    background-color: rgb(50, 45, 194) !important;
-    border: none !important;
-    cursor: pointer !important;
-    color: white !important;
-  }
-  .btn-info:hover,.btn-info:hover,.btn-info:focus{
-    background-color: rgb(40, 37, 132);
-    color: white !important;
-    border: none !important;
-  }
+  /*.btn-info {*/
+  /*  background-color: rgb(50, 45, 194) !important;*/
+  /*  border: none !important;*/
+  /*  cursor: pointer !important;*/
+  /*  color: white !important;*/
+  /*}*/
+  /*.btn-info:hover,.btn-info:hover,.btn-info:focus{*/
+  /*  background-color: rgb(40, 37, 132);*/
+  /*  color: white !important;*/
+  /*  border: none !important;*/
+  /*}*/
+
+.alert-dismissible .close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  padding: 0.75rem 1.25rem;
+  color: inherit;
+  border: none;
+  background: none;
+}
+.close {
+  float: right;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #000;
+  text-shadow: 0 1px 0 #fff;
+  opacity: .5;
+}
 </style>
