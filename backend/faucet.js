@@ -1,6 +1,6 @@
 require("dotenv").config();
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-const constants = require("./constants");
+const constants = require("./config/constants");
 const {
     Secp256k1HdWallet
 } = require("@cosmjs/amino");
@@ -21,7 +21,10 @@ const {
 } = require("cosmjs-types/cosmos/bank/v1beta1/tx");
 
 
-
+/*
+    Redis Connection
+    Default no credential to local host
+ */
 const redis = require('ioredis')
 const client = redis.createClient({
     port: process.env.REDIS_PORT || 6379,
@@ -32,10 +35,16 @@ client.on('connect', function() {
 });
 
 
+/*
+    Remove whitespaces from string
+ */
 function trimWhiteSpaces(data) {
     return data.split(' ').join('');
 }
 
+/*
+    Compose message
+ */
 function msg(inputs, outputs) {
     return {
         typeUrl: msgSendTypeUrl,
@@ -52,9 +61,37 @@ function msg(inputs, outputs) {
     }
 }
 
-async function Transaction(wallet, signerAddress, msgs, fee, memo = '') {
+/*
+    Sign and broadcast message
+ */
+async function signAndBroadcast(wallet, signerAddress, msgs, fee, memo = '') {
     const cosmJS = await SigningStargateClient.connectWithSigner(rpc, wallet);
     return await cosmJS.signAndBroadcast(signerAddress, msgs, fee, memo); //DeliverTxResponse, 0 iff success
+}
+
+async function processTransaction(wallet,addr,msgs){
+    try {
+        let faucetQueue
+        faucetQueue = await getFaucetQueue();
+        const response = await signAndBroadcast(
+            wallet,
+            addr,
+            [msgs], {
+                "amount": [{
+                    amount: (parseInt(constants.gas) * GasPrice.fromString(constants.gas_price).amount).toString(),
+                    denom: constants.DENOM
+                }],
+                "gas": constants.gas
+            },
+            "Thanks for using Osmosis Faucet"
+        );
+        faucetQueue.forEach(function(address) {
+            removeFromQueue(address)
+        })
+    } catch (err) {
+        console.error('Unable to process transaction')
+        throw err
+    }
 }
 
 async function MnemonicWalletWithPassphrase(mnemonic) {
@@ -65,7 +102,29 @@ async function MnemonicWalletWithPassphrase(mnemonic) {
     });
     const [firstAccount] = await wallet.getAccounts();
     return [wallet, firstAccount.address];
+}
 
+async function validateAccount(userAddress){
+    let xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("GET", restAPI + "/cosmos/auth/v1beta1/accounts/" + userAddress, false); // false for synchronous request
+    xmlHttp.send(null);
+    const accountResponse = JSON.parse(xmlHttp.responseText);
+    console.log("Account Validation Response")
+    console.log(accountResponse)
+    return accountResponse
+}
+
+async function getFaucetQueue() {
+    let faucetQueue
+    try {
+        faucetQueue = await client.lrange('faucetQueue',0, -1)
+        console.log("Getting Faucet Queue")
+        console.log(faucetQueue);
+        return faucetQueue
+    } catch (err) {
+        console.error('Unable to get queue')
+        throw err
+    }
 }
 
 async function addToQueue(userAddress){
@@ -97,14 +156,7 @@ function runner() {
     setInterval(async function() {
 
         let faucetQueue
-        try {
-            faucetQueue = await client.lrange('faucetQueue',0, -1)
-            console.log("Getting Faucet Queue")
-            console.log(faucetQueue);
-        } catch (err) {
-            console.error('isOverLimit: could not increment key')
-            throw err
-        }
+        faucetQueue = await getFaucetQueue();
 
         if (faucetQueue.length > 0) {
             try {
@@ -119,22 +171,7 @@ function runner() {
                     }, ],
                 }));
                 const msgs = msg(addr, outputs);
-                const response = await Transaction(
-                    wallet,
-                    addr,
-                    [msgs], {
-                        "amount": [{
-                            amount: (parseInt(constants.gas) * GasPrice.fromString(constants.gas_price).amount).toString(),
-                            denom: constants.DENOM
-                        }],
-                        "gas": constants.gas
-                    },
-                    "Thanks for using Osmosis Faucet"
-                );
-                faucetQueue.forEach(function(address) {
-                    removeFromQueue(address)
-                })
-
+                await processTransaction(wallet,addr,msgs)
 
             } catch (e) {
                 console.log("Transaction Failed: ", e);
@@ -163,35 +200,28 @@ async function handleFaucetRequest(req) {
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
 
     try {
-
         let ipCount
         try {
             ipCount = await client.incr(ip)
         } catch (err) {
-            console.error('isOverLimit: could not increment key')
+            console.error('ipCount: could not increment key')
             throw err
         }
         console.log(`${ip} has value: ${ipCount}`)
 
         if (ipCount > constants.MAX_PER_IP) {
-            console.log("OVERLIMIT!")
+            console.log("Ip is over limits")
             client.expire(ip, constants.TIME_LIMIT)
             return JSON.stringify({
                 status: "error",
                 message: "You have requested " + ipCount + " times. The limit  " + constants.MAX_PER_IP + " per " + secondsToHms(constants.TIME_LIMIT) + ""
             });
         } else {
-            // Validate account
-            let xmlHttp = new XMLHttpRequest();
-            xmlHttp.open("GET", restAPI + "/cosmos/auth/v1beta1/accounts/" + userAddress, false); // false for synchronous request
-            xmlHttp.send(null);
-            const accountResponse = JSON.parse(xmlHttp.responseText);
+            let validateAccount
+            validateAccount = await validateAccount(userAddress);
 
-            console.log("Account Validation Response")
-            console.log(accountResponse)
-
+            // If we get any code then report it, except 5 which means no account exist which is fine to send to a new account.
             if (accountResponse.code && accountResponse.code !== 5) {
-                console.log(accountResponse);
                 return JSON.stringify({
                     status: "error",
                     message: accountResponse.message
@@ -209,15 +239,11 @@ async function handleFaucetRequest(req) {
                 });
             }
         }
-
-
-
-
     } catch (e) {
         console.log(e);
         return JSON.stringify({
             status: "error",
-            message: "Invalid address."
+            message: e.toString()
         });
     }
 
@@ -226,6 +252,4 @@ async function handleFaucetRequest(req) {
 module.exports = {
     runner,
     handleFaucetRequest,
-    MnemonicWalletWithPassphrase,
-    Transaction
 };

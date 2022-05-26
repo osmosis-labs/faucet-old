@@ -33,10 +33,10 @@ Use the following command to faucet tokens into your wallet address:
 
 # Local Environment
 ```c
-curl -d '{"address":"osmo1...<osmo wallet address>"}' -H 'Content-Type: application/json' http://localhost:8080/faucetRequest
+curl -d '{"address":"osmo1...<osmo wallet address>"}' -H 'Content-Type: application/json' http://localhost:8080/request
 ```
 
 # Testnet
 ```c
-curl -d '{"address":"osmo1a5h27j38jqe9ehqa95cjcm7vg05n56um0lufmj"}' -H 'Content-Type: application/json' https://testnet-faucet.dev-osmosis.zone/faucetRequest
+curl -d '{"address":"osmo1a5h27j38jqe9ehqa95cjcm7vg05n56um0lufmj"}' -H 'Content-Type: application/json' https://testnet-faucet.dev-osmosis.zone/request
 ```

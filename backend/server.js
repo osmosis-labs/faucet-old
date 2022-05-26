@@ -1,33 +1,30 @@
-const iterator = require("./faucet")
-const express = require('express')
-const app = express()
-const port = process.env.SERVER_PORT
-const cors = require('cors')
-const constants = require("./constants")
+const faucet = require("./faucet");
+const express = require('express');
+const app = express();
+const port = process.env.SERVER_PORT;
+const cors = require('cors');
+const constants = require("./config/constants");
 
-// const limitReached = (req: express.request, res: express.response) => {
-//     log.warn({ ip: req.ip }, 'Unfriendly rate limiter triggered')
-//     res.status(429).send('Too many requests. Try again later.')
-// }
-
-app.use(express.static('public'))
-app.use(cors())
-app.use(express.json());       // to support JSON-encoded bodies
-app.post('/faucetRequest', async (req, res) => {
+app.use(cors());
+app.use(express.json());
+app.post('/request', async (req, res) => {
     try {
-    const response = await iterator.handleFaucetRequest(req)
-    console.log("RES::::");
-    console.log(response);
-    res.send(response)
+        const response = await faucet.handleFaucetRequest(req);
+        console.log(response);
+        res.send(response)
     } catch (error) {
         console.log(error)
     }
-})
+});
 
-iterator.runner()
+app.get('/request', async (req, res) => {
+        res.send("You must call this via a post method with the required parameters. <a href='https://github.com/osmosis-labs/faucet'>Learn more</a>")
+});
+
+faucet.runner();
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
-})
+});
 
 

@@ -52,10 +52,10 @@ import axios from "axios";
 export default {
   name: 'App',
   data() { return {
-form: {
+  form: {
           formName: "Osmosis Testnet Faucet",
-          endpoint: "https://testnet-faucet.dev-osmosis.zone/faucetRequest",
-          payload: {
+          endpoint: process.env.FAUCET_SERVER,
+    payload: {
             address: "",
         }
       },
