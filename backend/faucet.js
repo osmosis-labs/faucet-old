@@ -190,7 +190,7 @@ async function handleFaucetRequest(req) {
             console.log("Account Validation Response")
             console.log(accountResponse)
 
-            if (accountResponse.code) {
+            if (accountResponse.code && accountResponse.code !== 5) {
                 console.log(accountResponse);
                 return JSON.stringify({
                     status: "error",
