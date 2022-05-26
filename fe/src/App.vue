@@ -54,7 +54,7 @@ export default {
   data() { return {
 form: {
           formName: "Osmosis Testnet Faucet",
-          endpoint: "http://localhost/faucetRequest",
+          endpoint: "https://faucet.osmosis.zone/faucetRequest",
           payload: {
             address: "",
         }
@@ -116,17 +116,17 @@ form: {
     padding: 10px!important;
     color: #fff!important;
   }
-  /*.btn-info {*/
-  /*  background-color: rgb(50, 45, 194) !important;*/
-  /*  border: none !important;*/
-  /*  cursor: pointer !important;*/
-  /*  color: white !important;*/
-  /*}*/
-  /*.btn-info:hover,.btn-info:hover,.btn-info:focus{*/
-  /*  background-color: rgb(40, 37, 132);*/
-  /*  color: white !important;*/
-  /*  border: none !important;*/
-  /*}*/
+  .btn-info {
+    background-color: rgb(50, 45, 194) !important;
+    border: none !important;
+    cursor: pointer !important;
+    color: white !important;
+  }
+  .btn-info:hover,.btn-info:hover,.btn-info:focus{
+    background-color: rgb(40, 37, 132);
+    color: white !important;
+    border: none !important;
+  }
 
 .alert-dismissible .close {
   position: absolute;
