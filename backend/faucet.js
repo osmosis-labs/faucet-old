@@ -217,8 +217,8 @@ async function handleFaucetRequest(req) {
                 message: "You have requested " + ipCount + " times. The limit  " + constants.MAX_PER_IP + " per " + secondsToHms(constants.TIME_LIMIT) + ""
             });
         } else {
-            let validateAccount
-            validateAccount = await validateAccount(userAddress);
+            let accountResponse
+            accountResponse = await validateAccount(userAddress);
 
             // If we get any code then report it, except 5 which means no account exist which is fine to send to a new account.
             if (accountResponse.code && accountResponse.code !== 5) {
