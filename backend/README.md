@@ -1,5 +1,10 @@
 # Faucet
-This is a modified backend based on [this](https://github.com/persistenceOne/faucet) which did not include a frontend. The idea is to convert this project to use OsmoJS
+This is a modified backend based on  which did not include a frontend.
+
+# Requirements
+- a server like a DO droplet
+- Redis
+- NodeJs 14+
 
 ### Use node 14+. In DigitalOcean update it by
 ```
