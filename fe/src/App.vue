@@ -54,7 +54,7 @@ export default {
   data() { return {
 form: {
           formName: "Osmosis Testnet Faucet",
-          endpoint: "https://faucet.osmosis.zone/faucetRequest",
+          endpoint: "https://testnet-faucet.dev-osmosis.zone/faucetRequest",
           payload: {
             address: "",
         }
