@@ -19,7 +19,6 @@ import { stringToPath } from "@cosmjs/crypto";
               <div class="card-body">
                 <form>
                   <div class="mb-4">
-                    <label for="username" class="form-label">Osmosis Address</label>
                     <b-input-group class="mt-3" prepend="Osmosis Address">
                       <b-form-input  v-model="form.payload.address"></b-form-input>
                       <b-input-group-append>
@@ -83,9 +82,11 @@ import { stringToPath } from "@cosmjs/crypto";
                     </form>
                   </b-card>
                 </p></b-tab>
-                <b-tab title="Docs">
+                <b-tab title="What's this?">
                   <b-card>
                     <p>
+                      <h4>What is a the Osmosis testnet faucet?</h4>
+                      <p>The Osmosis faucet distributes small amounts of OSMO to developers who are interacting with the testnet. These tokens don't have any real value as they are part of the testing network only.</p>
                     <a href="https://docs.osmosis.zone/developing/network/public-endpoints.html#official-endpoints"> Network docs</a>
                     </p>
                   </b-card>
@@ -109,7 +110,7 @@ import { stringToPath } from "@cosmjs/crypto";
     name: 'App',
     data() { return {
       form: {
-        formName: "Osmosis Testnet Faucet",
+        formName: "Osmosis testnet faucet",
         endpoint: import.meta.env.VITE_FAUCET_SERVER,
         payload: {
           mnemonic: "",
@@ -263,6 +264,9 @@ body {
   color: white;
   border: none;
 }
+  p, p a, p a:hover {
+    color: white;
+  }
 
 
 </style>
