@@ -17,6 +17,16 @@ app.post('/request', async (req, res) => {
     }
 });
 
+app.get('/queue', async (req, res) => {
+    try {
+        const response = await faucet.getQueue(req);
+        console.log(response);
+        res.send(response)
+    } catch (error) {
+        console.log(error)
+    }
+});
+
 app.get('/request', async (req, res) => {
         res.send("You must call this via a post method with the required parameters. <a href='https://github.com/osmosis-labs/faucet'>Learn more</a>")
 });

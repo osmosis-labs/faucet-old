@@ -1,8 +1,7 @@
 require("dotenv").config();
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const constants = require("./config/constants");
-const {
-    Secp256k1HdWallet
+const { Secp256k1HdWallet
 } = require("@cosmjs/amino");
 const {
     SigningStargateClient,
@@ -249,7 +248,11 @@ async function handleFaucetRequest(req) {
 
 }
 
-module.exports = {
-    runner,
-    handleFaucetRequest,
-};
+async function getQueue() {
+    let getQueue
+    getQueue = await getFaucetQueue();
+    console.log(getQueue)
+    return getQueue;
+}
+
+module.exports = {runner, handleFaucetRequest,MnemonicWalletWithPassphrase,processTransaction,getQueue};
