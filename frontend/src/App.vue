@@ -2,7 +2,7 @@
 import axios from "axios";
 import HelloWorld from './components/HelloWorld.vue'
 import TheWelcome from './components/TheWelcome.vue'
-import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
+import { Secp256k1HdWallet } from "@cosmjs/amino";
 import { assertIsBroadcastTxSuccess, SigningStargateClient, StargateClient } from "@cosmjs/stargate";
 import { stringToPath } from "@cosmjs/crypto";
 
@@ -11,7 +11,7 @@ import { stringToPath } from "@cosmjs/crypto";
 <template>
   <div class="container" id="app">
     <div class="row justify-content-center mt-5">
-      <div class="col-lg-6 col-md-6 col-sm-6">
+      <div class="col-lg-8 col-md-12 col-sm-12">
         <div class="row">
           <div class="col-lg-12 col-md-12 col-sm-12">
             <div class="card shadow">
@@ -22,7 +22,12 @@ import { stringToPath } from "@cosmjs/crypto";
                 <form>
                   <div class="mb-4">
                     <label for="username" class="form-label">Osmosis Address</label>
-                    <input class="form-control" type="text" v-model="form.payload.address" />
+                    <b-input-group class="mt-3" prepend="Osmosis Address">
+                      <b-form-input  v-model="form.payload.address"></b-form-input>
+                      <b-input-group-append>
+                        <b-button variant="info" @click="copy(form.payload.address)">Copy</b-button>
+                      </b-input-group-append>
+                    </b-input-group>
                   </div>
                   <div class="d-grid">
                     <input class="form-control btn btn-info" type="submit" @click.prevent="submit" value="Get Tokens"/>
@@ -37,27 +42,59 @@ import { stringToPath } from "@cosmjs/crypto";
 
 
           <div class="row justify-content-center mt-5">
-            <div class="col col-lg-12">
-              <b-button v-b-toggle.collapse-1 variant="primary">Create Wallet</b-button>
-              <b-button  variant="info" href="https://docs.osmosis.zone/developing/network/public-endpoints.html#official-endpoints" target="_blank">Network Docs</b-button>
-              <b-collapse id="collapse-1" class="mt-2">
-                <b-card>
-                  <form>
-                    <div class="mb-4">
-                      <label for="address" class="form-label">address</label>
-                      <input class="form-control" type="text" v-model="wallet.address" />
-                    </div>
-                    <div class="mb-4">
-                      <label for="mnemonic" class="form-label">Mnemonic</label>
-                      <input class="form-control" type="text" v-model="wallet.mnemonic" />
-                    </div>
-                    <div class="d-grid">
-                      <input class="form-control btn btn-info" type="submit" @click.prevent="createWallet" value="Generate new wallet"/>
-                    </div>
-                  </form>
-                </b-card>
-              </b-collapse>
+            <div>
+              <b-tabs content-class="mt-3">
+                <b-tab title="Queue" active>
+                  <b-card>
+                  <div v-if="queue.list[0]">
+                    <b-list-group v-for="q in queue.list">
+                      <b-list-group-item class="bg-transparent">{{q}}</b-list-group-item>
+                    </b-list-group>
+                  </div>
+                  <div v-else>
+                    Queue is currently empty.
+                  </div>
+
+                    <b-spinner v-if="queue.loading"></b-spinner>
+
+                  <input class="form-control btn btn-info" type="submit" @click.prevent="getQueue()" value="Refresh"/>
+                  </b-card>
+                </b-tab>
+                <b-tab title="Create Wallet"><p>
+                  <b-card>
+                    <form>
+                      <div class="mb-4">
+                        <b-input-group class="mt-3" prepend="Address">
+                          <b-form-input  v-model="wallet.address"></b-form-input>
+                          <b-input-group-append>
+                            <b-button variant="info" @click="copy(wallet.address)">Copy</b-button>
+                          </b-input-group-append>
+                        </b-input-group>
+                      </div>
+                      <div class="mb-4">
+                        <b-input-group class="mt-3" prepend="mnemonic">
+                          <b-form-input  v-model="wallet.mnemonic"></b-form-input>
+                          <b-input-group-append>
+                            <b-button variant="info" @click="copy(wallet.mnemonic)">Copy</b-button>
+                          </b-input-group-append>
+                        </b-input-group>
+                      </div>
+                      <div class="d-grid">
+                        <input class="form-control btn btn-info" type="submit" @click.prevent="createWallet" value="Generate new wallet"/>
+                      </div>
+                    </form>
+                  </b-card>
+                </p></b-tab>
+                <b-tab title="Docs">
+                  <b-card>
+                    <p>
+                    <a href="https://docs.osmosis.zone/developing/network/public-endpoints.html#official-endpoints"> Network docs</a>
+                    </p>
+                  </b-card>
+                </b-tab>
+              </b-tabs>
             </div>
+
           </div>
 
         </div>
@@ -65,22 +102,6 @@ import { stringToPath } from "@cosmjs/crypto";
       </div>
     </div>
 
-
-
-
-
-
-    <!--    <div class="row justify-content-center mt-5">-->
-    <!--    <div class="col col-lg-6">-->
-    <!--    <b-button v-b-toggle.collapse-1 variant="primary">State</b-button>-->
-    <!--    <b-button  variant="info" href="https://docs.osmosis.zone/developing/network/public-endpoints.html#official-endpoints" target="_blank">Network Docs</b-button>-->
-    <!--        <b-collapse id="collapse-1" class="mt-2">-->
-    <!--          <b-card>-->
-    <!--              <pre><code> {{form}} {{alert}} </code></pre>-->
-    <!--          </b-card>-->
-    <!--        </b-collapse>-->
-    <!--    </div>-->
-    <!--    </div>-->
 
   </div>
 </template>
@@ -99,6 +120,11 @@ import { stringToPath } from "@cosmjs/crypto";
       },
       wallet: {
         address: "No address generated",
+        mnemonic: "No address generated"
+      },
+      queue: {
+        list: {},
+        loading: false,
       },
       alert: {
        faucet: {
@@ -116,11 +142,12 @@ import { stringToPath } from "@cosmjs/crypto";
     }
     ,
     mounted(){
-      this.MnemonicWalletWithPassphrase()
+      this.createWallet()
+      this.getQueue()
     },
     methods: {
       submit() {
-        axios.post(this.form.endpoint, {
+        axios.post(this.form.endpoint+"/request", {
           address: this.form.payload.address,
         })
                 .then(response => {
@@ -128,6 +155,7 @@ import { stringToPath } from "@cosmjs/crypto";
                   this.alert.faucet.status = response.data.status;
                   this.alert.faucet.message = response.data.message;
                   this.alert.faucet.show = true;
+                  this.getQueue()
                 })
                 .catch(error => {
                   console.log(error);
@@ -139,12 +167,27 @@ import { stringToPath } from "@cosmjs/crypto";
 
 
       },
+      getQueue() {
+        this.queue.loading = true;
+        axios.get(this.form.endpoint+"/queue")
+                .then(response => {
+                  console.log(response);
+                  this.queue.list = response.data;
+                  this.queue.loading = false;
+                })
+                .catch(error => {
+                  console.log(error);
+                });
 
+
+
+      },
       async createWallet() {
-          const wallet = await DirectSecp256k1HdWallet.generate(12,{
+        const HD_PATH = "m/44'/118'/0'/0/0";
+        const wallet = await Secp256k1HdWallet.generate(12,{
           prefix: "osmo",
           bip39Password: '',
-          hdPaths: [stringToPath("m/44'/118'/0'/0/0")]
+          hdPaths:[stringToPath(HD_PATH)]
         });
         const [firstAccount] = await wallet.getAccounts();
         this.wallet = wallet
@@ -161,6 +204,10 @@ import { stringToPath } from "@cosmjs/crypto";
         //   const [firstAccount] = await wallet.getAccounts();
         //   return [wallet, firstAccount.address];
       },
+      async copy(s) {
+        await navigator.clipboard.writeText(s);
+      }
+
     }
   }
 </script>
@@ -176,8 +223,10 @@ import { stringToPath } from "@cosmjs/crypto";
   margin-top: 60px;
 }
 body {
-  background-image: url("assets/bk.jpg");
-  background-size: cover!important;
+  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('assets/bk.jpg');
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
   background-attachment: fixed;
   color: #fff !important;
   font-family: 'Prompt', sans-serif !important;
@@ -194,33 +243,28 @@ body {
 }
 .btn-info {
   background-color: rgb(50, 45, 194) !important;
-  border: none !important;
+  border-color: rgb(50, 45, 194) !important;
+
   cursor: pointer !important;
   color: white !important;
 }
 .btn-info:hover,.btn-info:hover,.btn-info:focus{
   background-color: rgb(40, 37, 132);
   color: white !important;
-  border: none !important;
+
 }
 
-.alert-dismissible .close {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 2;
-  padding: 0.75rem 1.25rem;
-  color: inherit;
+.nav-tabs .nav-link {
+  color: white;
+}
+ .nav-item  {
+   background: #ffffff6b;
+   color: white;
+ }
+.list-group-item {
+  color: white;
   border: none;
-  background: none;
 }
-.close {
-  float: right;
-  font-size: 1.5rem;
-  font-weight: 700;
-  line-height: 1;
-  color: #000;
-  text-shadow: 0 1px 0 #fff;
-  opacity: .5;
-}
+
+
 </style>

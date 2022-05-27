@@ -13,6 +13,13 @@ See [Vite Configuration Reference](https://vitejs.dev/config/).
 ## Project Setup
 
 ```sh
+cp .env.example .env
+```
+
+## Configure
+Configure the endpoint in your .env.local. Defaults to localhost in case you are running the server locally. 
+
+```sh
 npm install
 ```
 
