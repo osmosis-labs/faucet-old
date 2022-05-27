@@ -1,7 +1,5 @@
 <script setup>
 import axios from "axios";
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
 import { Secp256k1HdWallet } from "@cosmjs/amino";
 import { assertIsBroadcastTxSuccess, SigningStargateClient, StargateClient } from "@cosmjs/stargate";
 import { stringToPath } from "@cosmjs/crypto";
