@@ -106,12 +106,16 @@ import { stringToPath } from "@cosmjs/crypto";
 </template>
 
 <script>
+  // declare const window: any
+  // prefer the `window.` application setting over `.env` files.
+  export const API_ENDPOINT_URL = (window.FAUCET_SERVER ? window.FAUCET_SERVER : import.meta.env.VITE_FAUCET_SERVER);
+  console.log(API_ENDPOINT_URL)
   export default {
     name: 'App',
     data() { return {
       form: {
         formName: "Osmosis testnet faucet",
-        endpoint: import.meta.env.VITE_FAUCET_SERVER,
+        endpoint: API_ENDPOINT_URL,
         payload: {
           mnemonic: "",
           address: "",
