@@ -16,6 +16,7 @@
     "bootstrap-vue-3": "^0.1.13",
     "dotenv": "^16.0.1",
     "pinia": "^2.0.14",
+    "popper.js": "^1.16.1",
     "vue": "^3.2.33"
   },
   "devDependencies": {
