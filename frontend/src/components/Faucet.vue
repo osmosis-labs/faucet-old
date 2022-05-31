@@ -1,19 +1,5 @@
-<script setup>
-import axios from "axios";
-
-import { Secp256k1HdWallet } from "@cosmjs/amino";
-import { assertIsBroadcastTxSuccess, SigningStargateClient, StargateClient } from "@cosmjs/stargate";
-import { stringToPath } from "@cosmjs/crypto";
-import { usekeplrStore } from '../stores/keplr'
-import { useFaucetStore } from '../stores/faucet'
-import { storeToRefs } from 'pinia'
-
-const {form, wallet, queue, alert } = storeToRefs(useFaucetStore())
-const {isNetworkAdded, chainId, rpcEndpoint, address,resultTx } = storeToRefs(usekeplrStore())
-</script>
 
 <template>
-
   <div class="container" id="app">
     <div class="row justify-content-center mt-5">
       <div class="col-lg-10 col-md-12 col-sm-12">
@@ -89,10 +75,28 @@ const {isNetworkAdded, chainId, rpcEndpoint, address,resultTx } = storeToRefs(us
 </template>
 
 <script>
+  import axios from "axios";
+
+  import { Secp256k1HdWallet } from "@cosmjs/amino";
+  import { assertIsBroadcastTxSuccess, SigningStargateClient, StargateClient } from "@cosmjs/stargate";
+  import { stringToPath } from "@cosmjs/crypto";
+  import { usekeplrStore } from '../stores/keplr'
+  import { useFaucetStore } from '../stores/faucet'
+  import { storeToRefs } from 'pinia'
+
   export default {
     name: 'Faucet',
-    mounted(){
-        this.getQueue()
+    setup(){
+      const {form, wallet, queue, alert } = storeToRefs(useFaucetStore())
+      const {isNetworkAdded, chainId, rpcEndpoint, address,resultTx } = storeToRefs(usekeplrStore())
+
+      return {
+        form, wallet, queue, alert,
+        isNetworkAdded, chainId, rpcEndpoint, address,resultTx
+      }
+    },
+    mounted() {
+      this.getQueue()
     },
     methods: {
         submit() {
@@ -117,7 +121,7 @@ const {isNetworkAdded, chainId, rpcEndpoint, address,resultTx } = storeToRefs(us
 
 
       },
-      getQueue() {
+      async getQueue() {
         this.queue.loading = true;
         axios.get(this.form.endpoint+"/queue")
                 .then(response => {

@@ -9,7 +9,12 @@ import Keplr from './components/Keplr.vue'
 import Wallet from './components/Wallet.vue'
 import NotFound from './components/NotFound.vue'
 
+import { storeToRefs } from 'pinia'
+import { usekeplrStore } from './stores/keplr'
+import { useFaucetStore } from './stores/faucet'
 
+const {isNetworkAdded, chainId, rpcEndpoint, address,resultTx } = storeToRefs(usekeplrStore())
+const {form, wallet, queue, alert } = storeToRefs(useFaucetStore())
 
 
 </script>
@@ -43,7 +48,7 @@ const routes = {
               return routes[this.currentPath.slice(1) || '/'] || NotFound
           }
       },
-    mounted(){
+    async mounted(){
         window.addEventListener('hashchange', () => {
             this.currentPath = window.location.hash
         })

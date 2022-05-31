@@ -1,15 +1,4 @@
-<script setup>
-import { Secp256k1HdWallet } from "@cosmjs/amino";
-import { assertIsBroadcastTxSuccess, SigningStargateClient, StargateClient } from "@cosmjs/stargate";
-import { stringToPath } from "@cosmjs/crypto";
 
-import { usekeplrStore } from '../stores/keplr'
-import { useFaucetStore } from '../stores/faucet'
-import { storeToRefs } from 'pinia'
-
-const {form, wallet, queue, alert } = storeToRefs(useFaucetStore())
-const {isNetworkAdded, chainId, rpcEndpoint, address,resultTx } = storeToRefs(usekeplrStore())
-</script>
 
 <template>
 
@@ -54,21 +43,25 @@ const {isNetworkAdded, chainId, rpcEndpoint, address,resultTx } = storeToRefs(us
 </template>
 
 <script>
+  import { Secp256k1HdWallet } from "@cosmjs/amino";
+  import { assertIsBroadcastTxSuccess, SigningStargateClient, StargateClient } from "@cosmjs/stargate";
+  import { stringToPath } from "@cosmjs/crypto";
+
+  import { usekeplrStore } from '../stores/keplr'
+  import { useFaucetStore } from '../stores/faucet'
+  import { storeToRefs } from 'pinia'
+
+
   export default {
     name: 'App',
-    data() { return {
-      wallet: {
-        address: "No address generated",
-        mnemonic: "No address generated"
-      },
-      alert: {
-        wallet: {
-          show: false,
-          status: "",
-          message: ""
-        }
+    setup(){
+      const {form, wallet, queue, alert } = storeToRefs(useFaucetStore())
+      const {isNetworkAdded, chainId, rpcEndpoint, address,resultTx } = storeToRefs(usekeplrStore())
+
+      return {
+        form, wallet, queue, alert,
+        isNetworkAdded, chainId, rpcEndpoint, address,resultTx
       }
-    }
     },
     mounted(){
         this.createWallet()
