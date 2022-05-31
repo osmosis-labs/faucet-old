@@ -3,6 +3,13 @@ import axios from "axios";
 import { Secp256k1HdWallet } from "@cosmjs/amino";
 import { assertIsBroadcastTxSuccess, SigningStargateClient, StargateClient } from "@cosmjs/stargate";
 import { stringToPath } from "@cosmjs/crypto";
+
+import { storeToRefs } from 'pinia'
+import { usekeplrStore } from '../stores/keplr'
+
+const {isNetworkAdded, chainId, rpcEndpoint, address,resultTx } = storeToRefs(usekeplrStore())
+
+
 </script>
 <template>
 <div class="container" id="app">
@@ -35,7 +42,7 @@ import { stringToPath } from "@cosmjs/crypto";
                                 <p>Your address: {{ address }}</p>
                                 <br />
                                 <button v-on:click="sendTx">sendTx</button>
-                                
+
                                 <br />
                                 <p>{{ resultTx.transactionHash }}</p>
 
@@ -60,7 +67,7 @@ import { stringToPath } from "@cosmjs/crypto";
 <script>
     export default {
         name: 'keplrStart',
-       data() { 
+       data() {
            return {
             isNetworkAdded: false,
             chainId: 'osmo-test-4',
@@ -76,7 +83,7 @@ import { stringToPath } from "@cosmjs/crypto";
                 console.log("experimentalSuggestChain")
                 try {
                     await window.keplr.experimentalSuggestChain({
-                        chainId: this.chainId, 
+                        chainId: this.chainId,
                         chainName: "Osmosis Testnet",
                         rpc: "https://rpc-test.osmosis.zone",
                         rest: "https://lcd-test.osmosis.zone",
@@ -121,7 +128,7 @@ import { stringToPath } from "@cosmjs/crypto";
             } else {
                 alert("Please use the recent version of keplr extension");
             }
-                
+
             },
             connectKeplr: async function() {
                 if(!this.isNetworkAdded){
@@ -131,11 +138,11 @@ import { stringToPath } from "@cosmjs/crypto";
                    console.log("chain enabeld")
                    console.log(chainEnabled)
                     const offlineSigner = window.getOfflineSigner(this.chainId);
-                    const accounts = await offlineSigner.getAccounts();   
-                     console.log("accounts") 
+                    const accounts = await offlineSigner.getAccounts();
+                     console.log("accounts")
                     console.log(accounts)
                     this.address = accounts[0].address
-                  
+
              },
              disconnectKeplr: async function() {
                  this.address = null;
@@ -185,7 +192,7 @@ import { stringToPath } from "@cosmjs/crypto";
                     return true
                 }
             },
-            
+
       },
         async mounted () {
 

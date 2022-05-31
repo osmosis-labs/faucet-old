@@ -4,6 +4,7 @@ import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue-3/dist/bootstrap-vue-3.css'
 import App from './App.vue'
+import { createPinia } from 'pinia'
 
 
 
@@ -11,6 +12,7 @@ const app = createApp(App)
 //app.provide('experimentalSuggestChain', window.keplr.experimentalSuggestChain)
 app.config.globalProperties.$keplr = window.keplr;
 app.use(BootstrapVue3)
+app.use(createPinia())
 app.mount('#app')
 
 
