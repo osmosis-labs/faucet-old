@@ -23,7 +23,6 @@ const {form, wallet, queue, alert } = storeToRefs(useFaucetStore())
   <a class="btn btn-primary" href="#/" >Faucet</a> |
   <a class="btn btn-primary" href="#/keplr">Connect Keplr</a> |
   <a class="btn btn-primary" href="#/wallet">Create Wallet</a> |
-  <a class="btn btn-primary" href="#/non-existent-path">Broken Link</a>
   <component :is="currentView" />
 </template>
 
