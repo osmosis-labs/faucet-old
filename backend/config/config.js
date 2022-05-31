@@ -1,16 +1,29 @@
 require("dotenv").config();
 
+// ----------------------------------------------------------------
 // Environment variables
+// ----------------------------------------------------------------
 
 // Port of the faucet backend
 const port = process.env.PORT || 8080;
+
+// Mnemonic of the Faucet
 const mnemonic = process.env.FAUCET_MNEMONIC;
+
+// Endpoint used for rest queries
 const restEndpoint = process.env.REST_ENDPOINT || "https://lcd-test.osmosis.zone";
+
+// Endpoint used for rpc queries
 const rpcEndpoint = process.env.RPC_ENDPOINT || "https://rpc-test.osmosis.zone";
+
+// Host and port of redis 
 const redisPort = process.env.REDIS_PORT || 6379
 const redisHost = process.env.REDIS_HOST || 'localhost'
 
+// ----------------------------------------------------------------
 // Faucet backend parameters 
+// ----------------------------------------------------------------
+
 const FAUCET_QUEUE_LIMIT = 15;
 const AMOUNT = "1";
 const DENOM = "uosmo";
