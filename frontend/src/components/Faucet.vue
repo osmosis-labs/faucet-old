@@ -1,15 +1,22 @@
 <script setup>
 import axios from "axios";
+
 import { Secp256k1HdWallet } from "@cosmjs/amino";
 import { assertIsBroadcastTxSuccess, SigningStargateClient, StargateClient } from "@cosmjs/stargate";
 import { stringToPath } from "@cosmjs/crypto";
+import { usekeplrStore } from '../stores/keplr'
+import { useFaucetStore } from '../stores/faucet'
+import { storeToRefs } from 'pinia'
+
+const {form, wallet, queue, alert } = storeToRefs(useFaucetStore())
+const {isNetworkAdded, chainId, rpcEndpoint, address,resultTx } = storeToRefs(usekeplrStore())
 </script>
 
 <template>
 
   <div class="container" id="app">
     <div class="row justify-content-center mt-5">
-      <div class="col-lg-8 col-md-12 col-sm-12">
+      <div class="col-lg-10 col-md-12 col-sm-12">
         <div class="row">
           <div class="col-lg-12 col-md-12 col-sm-12">
             <div class="card shadow">
@@ -19,8 +26,9 @@ import { stringToPath } from "@cosmjs/crypto";
               <div class="card-body">
                 <form>
                   <div class="mb-4">
-                    <b-input-group class="mt-3" prepend="Osmosis Address">
-                      <b-form-input  v-model="form.payload.address"></b-form-input>
+                    <b-input-group class="mt-3 animate__animated " prepend="Osmosis Address" v-bind:class = "(form.payload.animate)?'animate__pulse':''">
+
+                      <b-form-input  v-model="form.payload.address" ></b-form-input>
                       <b-input-group-append>
                         <b-button variant="info" @click="copy(form.payload.address)">Copy</b-button>
                       </b-input-group-append>
@@ -57,31 +65,6 @@ import { stringToPath } from "@cosmjs/crypto";
                   <input class="form-control btn btn-info" type="submit" @click.prevent="getQueue()" value="Refresh"/>
                   </b-card>
                 </b-tab>
-                <b-tab title="Create Wallet"><p>
-                  <b-card>
-                    <form>
-                      <div class="mb-4">
-                        <b-input-group class="mt-3" prepend="Address">
-                          <b-form-input  v-model="wallet.address"></b-form-input>
-                          <b-input-group-append>
-                            <b-button variant="info" @click="copy(wallet.address)">Copy</b-button>
-                          </b-input-group-append>
-                        </b-input-group>
-                      </div>
-                      <div class="mb-4">
-                        <b-input-group class="mt-3" prepend="mnemonic">
-                          <b-form-input  v-model="wallet.mnemonic"></b-form-input>
-                          <b-input-group-append>
-                            <b-button variant="info" @click="copy(wallet.mnemonic)">Copy</b-button>
-                          </b-input-group-append>
-                        </b-input-group>
-                      </div>
-                      <div class="d-grid">
-                        <input class="form-control btn btn-info" type="submit" @click.prevent="createWallet" value="Generate new wallet"/>
-                      </div>
-                    </form>
-                  </b-card>
-                </p></b-tab>
                 <b-tab title="What's this?">
                   <b-card>
                     <p>
@@ -109,40 +92,12 @@ import { stringToPath } from "@cosmjs/crypto";
   export default {
     name: 'Faucet',
     data() { return {
-      form: {
-        formName: "Osmosis testnet faucet",
-        endpoint: import.meta.env.VITE_FAUCET_SERVER,
-        payload: {
-          mnemonic: "",
-          address: "",
-        }
-      },
-      wallet: {
-        address: "No address generated",
-        mnemonic: "No address generated"
-      },
-      queue: {
-        list: {},
-        loading: false,
-      },
-      alert: {
-       faucet: {
-         show: false,
-         status: "",
-         message: ""
-       },
-        wallet: {
-          show: false,
-          status: "",
-          message: ""
-        }
-      }
+
     }
     },
     mounted(){
-        this.createWallet()
         this.getQueue()
-        //this.client();
+
 
     },
     methods: {
@@ -155,6 +110,7 @@ import { stringToPath } from "@cosmjs/crypto";
                       this.alert.faucet.status = response.data.status;
                       this.alert.faucet.message = response.data.message;
                       this.alert.faucet.show = true;
+                      this.form.payload.animate = false;
                       this.getQueue()
                     })
                     .catch(error => {

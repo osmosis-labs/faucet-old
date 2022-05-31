@@ -6,45 +6,38 @@ import { stringToPath } from "@cosmjs/crypto";
 
 import { storeToRefs } from 'pinia'
 import { usekeplrStore } from '../stores/keplr'
+import { useFaucetStore } from '../stores/faucet'
 
 const {isNetworkAdded, chainId, rpcEndpoint, address,resultTx } = storeToRefs(usekeplrStore())
-
+const {form, wallet, queue, alert } = storeToRefs(useFaucetStore())
 
 </script>
 <template>
 <div class="container" id="app">
     <div class="row justify-content-center mt-5">
-      <div class="col-lg-8 col-md-12 col-sm-12">
+      <div class="col-lg-10 col-md-12 col-sm-12">
         <div class="row">
           <div class="row justify-content-center">
             <div>
                   <b-card>
-                      <div v-if="isKeplrInstalled">
-                          <b-alert variant="success" show>✅ Keplr is installed</b-alert>
+                      <div class="row">
+                          <div class="col">
+                              <div v-if="isKeplrInstalled">
+                                  <b-alert variant="success" show>✅ Keplr is installed</b-alert>
+                              </div>
+                              <div v-else>
+                                  <b-alert variant="warning" show> Keplr is not installed. Click here to install it.</b-alert>
+                              </div>
+                          </div>
+                          <div class="col">
+                              <div v-if="isNetworkAdded == false">
+                                  <b-alert variant="warning" show> Network <b> {{chainId}}</b> missing <button v-on:click="addNetwork" class="btn btn-primary"> Add it</button> </b-alert>
+                              </div>
+                              <div v-else>
+                                  <b-alert variant="success" show>✅ {{chainId}} added</b-alert>
+                              </div>
+                          </div>
                       </div>
-                      <div v-else>
-                          <b-alert variant="warning" show> Keplr is not installed. Click here to install it.</b-alert>
-                      </div>
-                      <div v-if="isNetworkAdded == false">
-                          <b-alert variant="warning" show> {{chainId}} has not been added to Keplr.<button v-on:click="addNetwork"> Add it</button> </b-alert>
-                      </div>
-                      <div v-else>
-                         <b-alert variant="success" show>✅ {{chainId}} has been added to Keplr</b-alert>
-                      </div>
-
-                     <b-button  variant="primary">
-                         <span v-if="isConnected" v-on:click="disconnectKeplr">Disconnect</span>
-                         <span v-else  v-on:click="connectKeplr">Connect</span>
-                     </b-button>
-
-                      <button > {{isConnected}}</button>
-                      network added {{isNetworkAdded}}
-                                <p>Your address: {{ address }}</p>
-                                <br />
-                                <button v-on:click="sendTx">sendTx</button>
-
-                                <br />
-                                <p>{{ resultTx.transactionHash }}</p>
 
 
                         <b-input-group prepend="Address" class="mt-3">
@@ -52,9 +45,19 @@ const {isNetworkAdded, chainId, rpcEndpoint, address,resultTx } = storeToRefs(us
                             <b-input-group-append>
                             <b-button variant="warning" v-if="isConnected" v-on:click="disconnectKeplr">Disconnect</b-button>
                             <b-button variant="info" v-else  v-on:click="connectKeplr">Connect</b-button>
+                            <b-button variant="info" v-if="isConnected"  v-on:click="getTokens">Get Tokens</b-button>
                             </b-input-group-append>
                         </b-input-group>
                   </b-card>
+
+
+<!--                <b-card class="mt-5">-->
+<!--                    <h3>Send Tokens</h3>-->
+<!--                    <button v-on:click="sendTx">sendTx</button>-->
+
+<!--                    <br />-->
+<!--                    <p>{{ resultTx.transactionHash }}</p>-->
+<!--                </b-card>-->
             </div>
           </div>
         </div>
@@ -147,6 +150,12 @@ const {isNetworkAdded, chainId, rpcEndpoint, address,resultTx } = storeToRefs(us
              disconnectKeplr: async function() {
                  this.address = null;
              },
+            getTokens: async  function() {
+                this.form.payload.address = this.address;
+                window.location = '#/'
+                this.form.payload.animate = true;
+
+            },
             sendTx: async function() {
                 await window.keplr.enable(this.chainId);
                 const offlineSigner = await window.getOfflineSignerAuto(this.chainId);

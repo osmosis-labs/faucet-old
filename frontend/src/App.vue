@@ -9,16 +9,16 @@ import Keplr from './components/Keplr.vue'
 import Wallet from './components/Wallet.vue'
 import NotFound from './components/NotFound.vue'
 
- 
+
 
 
 </script>
 
 <template>
-  <a href="#/">Faucet</a> |
-  <a href="#/keplr">Connect Keplr</a> |
-  <a href="#/wallet">Create Wallet</a> | 
-  <a href="#/non-existent-path">Broken Link</a>
+  <a class="btn btn-primary" href="#/" >Faucet</a> |
+  <a class="btn btn-primary" href="#/keplr">Connect Keplr</a> |
+  <a class="btn btn-primary" href="#/wallet">Create Wallet</a> |
+  <a class="btn btn-primary" href="#/non-existent-path">Broken Link</a>
   <component :is="currentView" />
 </template>
 
