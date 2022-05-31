@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+
+  frontend:
+    image: faucet-frontend
+    container_name: faucet-frontend
+    build: ./frontend
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      FAUCET_SERVER: ""
+      PORT: 3000
