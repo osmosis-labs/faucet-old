@@ -91,14 +91,8 @@ const {isNetworkAdded, chainId, rpcEndpoint, address,resultTx } = storeToRefs(us
 <script>
   export default {
     name: 'Faucet',
-    data() { return {
-
-    }
-    },
     mounted(){
         this.getQueue()
-
-
     },
     methods: {
         submit() {

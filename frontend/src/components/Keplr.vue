@@ -70,15 +70,6 @@ const {form, wallet, queue, alert } = storeToRefs(useFaucetStore())
 <script>
     export default {
         name: 'keplrStart',
-       data() {
-           return {
-            isNetworkAdded: false,
-            chainId: 'osmo-test-4',
-            rpcEndpoint: 'https://rpc-test.osmosis.zone',
-            address: null,
-            resultTx: '',
-           }
-        },
         methods: {
             addNetwork: async function() {
 
