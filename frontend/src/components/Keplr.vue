@@ -138,12 +138,8 @@ const {form, wallet, queue, alert } = storeToRefs(useFaucetStore())
                     await this.addNetwork();
                 }
                 const chainEnabled =  await window.keplr.enable(this.chainId);
-                   console.log("chain enabeld")
-                   console.log(chainEnabled)
                     const offlineSigner = window.getOfflineSigner(this.chainId);
                     const accounts = await offlineSigner.getAccounts();
-                     console.log("accounts")
-                    console.log(accounts)
                     this.address = accounts[0].address
 
              },
@@ -207,8 +203,6 @@ const {form, wallet, queue, alert } = storeToRefs(useFaucetStore())
 
               try {
                    const chainEnabled =  await window.keplr.enable(this.chainId);
-                   console.log("chain enabeld")
-                   console.log(chainEnabled)
                    this.isNetworkAdded = true;
                 }catch(e) {
                      console.log(e)
