@@ -1,6 +1,5 @@
-require("dotenv").config();
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-const constants = require("./config/constants");
+const constants = require("./config/config");
 const { Secp256k1HdWallet
 } = require("@cosmjs/amino");
 const {
@@ -10,15 +9,12 @@ const {
 const {
     stringToPath
 } = require("@cosmjs/crypto");
-const restAPI = process.env.BLOCKCHAIN_REST_SERVER;
-const rpc = process.env.RPC;
-const mnemonic = process.env.FAUCET_MNEMONIC;
+
 const msgSendTypeUrl = "/cosmos.bank.v1beta1.MsgMultiSend";
 const {
     MsgMultiSend,
     fromPartial
 } = require("cosmjs-types/cosmos/bank/v1beta1/tx");
-
 
 /*
     Redis Connection
@@ -26,13 +22,12 @@ const {
  */
 const redis = require('ioredis')
 const client = redis.createClient({
-    port: process.env.REDIS_PORT || 6379,
-    host: process.env.REDIS_HOST || 'localhost',
+    host: redisHost,
+    port: redisPort,
 })
 client.on('connect', function() {
-    console.log('connected');
+    console.log('Redis connected');
 });
-
 
 /*
     Remove whitespaces from string
@@ -64,7 +59,7 @@ function msg(inputs, outputs) {
     Sign and broadcast message
  */
 async function signAndBroadcast(wallet, signerAddress, msgs, fee, memo = '') {
-    const cosmJS = await SigningStargateClient.connectWithSigner(rpc, wallet);
+    const cosmJS = await SigningStargateClient.connectWithSigner(rpcEndpoint, wallet);
     return await cosmJS.signAndBroadcast(signerAddress, msgs, fee, memo); //DeliverTxResponse, 0 iff success
 }
 
@@ -105,7 +100,7 @@ async function MnemonicWalletWithPassphrase(mnemonic) {
 
 async function validateAccount(userAddress){
     let xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("GET", restAPI + "/cosmos/auth/v1beta1/accounts/" + userAddress, false); // false for synchronous request
+    xmlHttp.open("GET", restEndpoint + "/cosmos/auth/v1beta1/accounts/" + userAddress, false); // false for synchronous request
     xmlHttp.send(null);
     const accountResponse = JSON.parse(xmlHttp.responseText);
     console.log("Account Validation Response")
