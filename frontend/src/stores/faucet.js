@@ -3,11 +3,10 @@ import { defineStore } from 'pinia'
 // main is the name of the store. It is unique across your application
 // and will appear in devtools
 export const useFaucetStore = defineStore('faucet', {
-
     state: () => ({
         form: {
             formName: "Osmosis testnet faucet",
-            endpoint: import.meta.env.VITE_FAUCET_SERVER,
+            endpoint: window.FAUCET_SERVER ? window.FAUCET_SERVER : import.meta.env.VITE_FAUCET_SERVER,
             payload: {
                 mnemonic: "",
                 address: "",
