@@ -7,11 +7,13 @@
 import Faucet from './components/Faucet.vue'
 import Keplr from './components/Keplr.vue'
 import Wallet from './components/Wallet.vue'
+import Contracts from './components/Contracts.vue'
 import NotFound from './components/NotFound.vue'
 
 import { storeToRefs } from 'pinia'
 import { usekeplrStore } from './stores/keplr'
 import { useFaucetStore } from './stores/faucet'
+import { useContractStore } from './stores/contract'
 
 const {isNetworkAdded, chainId, rpcEndpoint, address,resultTx } = storeToRefs(usekeplrStore())
 const {form, wallet, queue, alert } = storeToRefs(useFaucetStore())
@@ -23,15 +25,19 @@ const {form, wallet, queue, alert } = storeToRefs(useFaucetStore())
   <a class="btn btn-primary" href="#/" >Faucet</a> |
   <a class="btn btn-primary" href="#/keplr">Connect Keplr</a> |
   <a class="btn btn-primary" href="#/wallet">Create Wallet</a> |
+  <a class="btn btn-primary" href="#/contracts">Contracts</a> |
   <component :is="currentView" />
 </template>
 
 <script>
 
+
+
 const routes = {
   '/': Faucet,
   '/keplr': Keplr,
-  '/wallet': Wallet
+  '/wallet': Wallet,
+  '/contracts': Contracts
 }
 
 
@@ -81,6 +87,9 @@ body {
   background-color: #241e45 !important;
 }
 .card {
+  background-color: rgba(42, 56, 162, 0.5) !important;
+}
+.light-card {
   background-color: rgba(255, 255, 255, 0.3) !important;
   -webkit-backdrop-filter: blur(10px)!important;
   backdrop-filter: blur(10px)!important;
@@ -89,6 +98,7 @@ body {
   padding: 10px!important;
   color: #fff!important;
 }
+
 .btn-info {
   background-color: rgb(50, 45, 194) !important;
   border-color: rgb(50, 45, 194) !important;

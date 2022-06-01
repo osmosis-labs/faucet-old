@@ -5,7 +5,7 @@
   <div class="container" id="app">
     <div class="row justify-content-center mt-5">
       <div class="col-lg-10 col-md-12 col-sm-12">
-        <b-card>
+        <b-card class="light-card">
           <form>
             <div class="mb-4">
               <b-input-group class="mt-3" prepend="Address">

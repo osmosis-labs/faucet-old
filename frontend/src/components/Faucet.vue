@@ -1,13 +1,20 @@
 
 <template>
-  <div class="container" id="app">
+  <div class="container" id="faucet">
     <div class="row justify-content-center mt-5">
       <div class="col-lg-10 col-md-12 col-sm-12">
-            <div class="card shadow">
+            <div class="card light-card">
               <div >
-                <h4 class="p-3" >{{form.formName}}</h4>
+                <h4 class="p-2" >{{form.formName}}</h4>
               </div>
               <div class="card-body">
+
+                <div class="row">
+                  <div class="col">
+                   You are currently connecting to <b> {{rpcEndpoint}}</b> on chain id <b> {{chainId}}</b>.
+                  </div>
+                </div>
+
                 <form>
                   <div class="mb-4">
                     <b-input-group class="mt-3 animate__animated " prepend="Osmosis Address" v-bind:class = "(form.payload.animate)?'animate__pulse':''">
@@ -28,37 +35,34 @@
               {{alert.faucet.message}}
             </b-alert>
       </div>
-      <div class="row justify-content-center mt-5">
-        <div class="col-lg-10 col-md-12 col-sm-12">
-          <b-tabs content-class="">
-            <b-tab title="Queue" active>
-              <b-card>
-                <div v-if="queue.list[0]">
-                  <b-list-group v-for="q in queue.list">
-                    <b-list-group-item class="bg-transparent">{{q}}</b-list-group-item>
-                  </b-list-group>
-                </div>
-                <div v-else>
-                  Queue is currently empty.
-                </div>
+      <div class="mt-5 col-lg-10 col-md-12 col-sm-12">
+        <b-tabs content-class="">
+          <b-tab title="Queue" active>
+            <b-card class="card light-card">
+              <div v-if="queue.list[0]">
+                <b-list-group v-for="q in queue.list">
+                  <b-list-group-item class="bg-transparent">{{q}}</b-list-group-item>
+                </b-list-group>
+              </div>
+              <div v-else>
+                Queue is currently empty.
+              </div>
 
-                <b-spinner v-if="queue.loading"></b-spinner>
+              <b-spinner v-if="queue.loading"></b-spinner>
 
-                <input class="form-control btn btn-info" type="submit" @click.prevent="getQueue()" value="Refresh"/>
-              </b-card>
-            </b-tab>
-            <b-tab title="What's this?">
-              <b-card>
-                <p>
-                <h4>What is a the Osmosis testnet faucet?</h4>
-                <p>The Osmosis faucet distributes small amounts of OSMO to developers who are interacting with the testnet. These tokens don't have any real value as they are part of the testing network only.</p>
-                <a href="https://docs.osmosis.zone/developing/network/public-endpoints.html#official-endpoints"> Network docs</a>
-                </p>
-              </b-card>
-            </b-tab>
-          </b-tabs>
-        </div>
-
+              <input class="form-control btn btn-info" type="submit" @click.prevent="getQueue()" value="Refresh"/>
+            </b-card>
+          </b-tab>
+          <b-tab title="What's this?">
+            <b-card class="card light-card">
+              <p>
+              <h4>What is a the Osmosis testnet faucet?</h4>
+              <p>The Osmosis faucet distributes small amounts of OSMO to developers who are interacting with the testnet. These tokens don't have any real value as they are part of the testing network only.</p>
+              <a href="https://docs.osmosis.zone/developing/network/public-endpoints.html#official-endpoints"> Network docs</a>
+              </p>
+            </b-card>
+          </b-tab>
+        </b-tabs>
       </div>
     </div>
 
@@ -150,5 +154,7 @@
 
 <style>
 
-
+  #faucet .nav-tabs {
+    border-bottom: 0px solid #dee2e6;
+  }
 </style>

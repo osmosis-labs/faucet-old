@@ -4,7 +4,7 @@
     <div class="row justify-content-center mt-5">
       <div class="col-lg-10 col-md-12 col-sm-12">
 
-                  <b-card>
+                  <b-card class="light-card">
                       <div class="row">
                           <div class="col">
                               <div v-if="isKeplrInstalled">
