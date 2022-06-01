@@ -1,4 +1,4 @@
-# Build
+# Builder
 FROM node:16 AS builder
 
 WORKDIR /app
@@ -14,7 +14,6 @@ FROM nginx:1.21.6-alpine
 WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 COPY --from=builder /app/dist .
-
 
 ENV PORT 3000
 # You can overwrite the default FAUCET_SERVER set in the .env file dinamically
