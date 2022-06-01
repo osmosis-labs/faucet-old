@@ -42,7 +42,7 @@ jobs:
           context: frontend/
           push: true
           platforms: linux/amd64
-          tags: $DOCKER_FRONTEND_REPO:$SHORT_SHA, $DOCKER_FRONTEND_REPO:main, $DOCKER_FRONTEND_REPO:latest
+          tags: ${{ env.DOCKER_FRONTEND_REPO }}:${{ env.SHORT_SHA }},${{ env.DOCKER_FRONTEND_REPO }}:main,${{ env.DOCKER_FRONTEND_REPO }}:latest
       - 
         name: Build and push backend
         uses: docker/build-push-action@v3
@@ -51,4 +51,4 @@ jobs:
           context: backend/
           push: true
           platforms: linux/amd64
-          tags: $DOCKER_BACKEND_REPO:$SHORT_SHA, $DOCKER_BACKEND_REPO:main, $DOCKER_BACKEND_REPO:latest
+          tags: ${{ env.DOCKER_BACKEND_REPO }}:${{ env.SHORT_SHA }},${{ env.DOCKER_BACKEND_REPO }}:main,${{ env.DOCKER_BACKEND_REPO }}:latest
