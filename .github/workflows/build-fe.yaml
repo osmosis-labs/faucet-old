@@ -13,6 +13,7 @@ jobs:
 
       - name: Install and Build 🔧
         run: |
+          node -v
           cd frontend
           npm install
           npm run build
