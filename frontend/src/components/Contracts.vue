@@ -26,7 +26,7 @@
                       </div>
                     </div>
                   </b-card-text>
-                  <!--                  <b-button variant="primary">Go somewhere</b-button>-->
+
                 </b-card-body>
                 <template #footer>
                   <small>
@@ -45,9 +45,6 @@
 </template>
 
 <script>
-  import { Secp256k1HdWallet } from "@cosmjs/amino";
-  import { assertIsBroadcastTxSuccess, SigningStargateClient, StargateClient } from "@cosmjs/stargate";
-  import { stringToPath } from "@cosmjs/crypto";
 
   import { usekeplrStore } from '../stores/keplr'
   import { useFaucetStore } from '../stores/faucet'
@@ -57,11 +54,11 @@
   import { CosmWasmClient } from "cosmwasm";
 
   export default {
-    name: 'App',
+    name: 'contracts',
     setup(){
-      const {form, wallet, queue, alert } = storeToRefs(useFaucetStore())
-      const {isNetworkAdded, chainId, rpcEndpoint, address,resultTx } = storeToRefs(usekeplrStore())
-      const { contracts } = storeToRefs(useContractStore())
+      const {form, wallet, queue, alert } = storeToRefs(useFaucetStore());
+      const {isNetworkAdded, chainId, rpcEndpoint, address,resultTx } = storeToRefs(usekeplrStore());
+      const { contracts } = storeToRefs(useContractStore());
 
       return {
         form, wallet, queue, alert,
@@ -70,10 +67,10 @@
       }
     },
     mounted(){
-       this.client()
+       this.getContracts()
     },
     methods: {
-      client: async  function() {
+      getContracts: async  function() {
         const client = await CosmWasmClient.connect(this.rpcEndpoint);
         console.log(client);
 
@@ -91,8 +88,8 @@
       },
       contractDetails: async function(address) {
          const client = await CosmWasmClient.connect(this.rpcEndpoint);
-         const details = await client.getContract(address)
-       return details;
+         const details = await client.getContract(address);
+        return details;
       },
 
     }
