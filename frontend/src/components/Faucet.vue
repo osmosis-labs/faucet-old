@@ -3,8 +3,6 @@
   <div class="container" id="app">
     <div class="row justify-content-center mt-5">
       <div class="col-lg-10 col-md-12 col-sm-12">
-        <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12">
             <div class="card shadow">
               <div >
                 <h4 class="p-3" >{{form.formName}}</h4>
@@ -29,42 +27,36 @@
             <b-alert v-model="alert.faucet.show"  dismissible >
               {{alert.faucet.message}}
             </b-alert>
-          </div>
+      </div>
+      <div class="row justify-content-center mt-5">
+        <div class="col-lg-10 col-md-12 col-sm-12">
+          <b-tabs content-class="">
+            <b-tab title="Queue" active>
+              <b-card>
+                <div v-if="queue.list[0]">
+                  <b-list-group v-for="q in queue.list">
+                    <b-list-group-item class="bg-transparent">{{q}}</b-list-group-item>
+                  </b-list-group>
+                </div>
+                <div v-else>
+                  Queue is currently empty.
+                </div>
 
+                <b-spinner v-if="queue.loading"></b-spinner>
 
-          <div class="row justify-content-center mt-5">
-            <div>
-              <b-tabs content-class="mt-3">
-                <b-tab title="Queue" active>
-                  <b-card>
-                  <div v-if="queue.list[0]">
-                    <b-list-group v-for="q in queue.list">
-                      <b-list-group-item class="bg-transparent">{{q}}</b-list-group-item>
-                    </b-list-group>
-                  </div>
-                  <div v-else>
-                    Queue is currently empty.
-                  </div>
-
-                    <b-spinner v-if="queue.loading"></b-spinner>
-
-                  <input class="form-control btn btn-info" type="submit" @click.prevent="getQueue()" value="Refresh"/>
-                  </b-card>
-                </b-tab>
-                <b-tab title="What's this?">
-                  <b-card>
-                    <p>
-                      <h4>What is a the Osmosis testnet faucet?</h4>
-                      <p>The Osmosis faucet distributes small amounts of OSMO to developers who are interacting with the testnet. These tokens don't have any real value as they are part of the testing network only.</p>
-                    <a href="https://docs.osmosis.zone/developing/network/public-endpoints.html#official-endpoints"> Network docs</a>
-                    </p>
-                  </b-card>
-                </b-tab>
-              </b-tabs>
-            </div>
-
-          </div>
-
+                <input class="form-control btn btn-info" type="submit" @click.prevent="getQueue()" value="Refresh"/>
+              </b-card>
+            </b-tab>
+            <b-tab title="What's this?">
+              <b-card>
+                <p>
+                <h4>What is a the Osmosis testnet faucet?</h4>
+                <p>The Osmosis faucet distributes small amounts of OSMO to developers who are interacting with the testnet. These tokens don't have any real value as they are part of the testing network only.</p>
+                <a href="https://docs.osmosis.zone/developing/network/public-endpoints.html#official-endpoints"> Network docs</a>
+                </p>
+              </b-card>
+            </b-tab>
+          </b-tabs>
         </div>
 
       </div>

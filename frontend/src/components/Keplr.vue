@@ -3,9 +3,7 @@
 <div class="container" id="app">
     <div class="row justify-content-center mt-5">
       <div class="col-lg-10 col-md-12 col-sm-12">
-        <div class="row">
-          <div class="row justify-content-center">
-            <div>
+
                   <b-card>
                       <div class="row">
                           <div class="col">
@@ -45,9 +43,7 @@
 <!--                    <br />-->
 <!--                    <p>{{ resultTx.transactionHash }}</p>-->
 <!--                </b-card>-->
-            </div>
-          </div>
-        </div>
+
       </div>
     </div>
   </div>
