@@ -4,7 +4,7 @@ require("dotenv").config();
 // Environment variables
 // ----------------------------------------------------------------
 
-// Port of the faucet backend
+// Port where this backend should run
 const port = process.env.PORT || 8080;
 
 // Mnemonic of the Faucet
@@ -37,6 +37,12 @@ const MAX_PER_IP = 10;
 const HD_PATH = "m/44'/118'/0'/0/0";
 
 module.exports = {
+    port,
+    mnemonic,
+    restEndpoint,
+    rpcEndpoint,
+    redisPort,
+    redisHost,
     FAUCET_QUEUE_LIMIT,
     AMOUNT,
     DENOM,

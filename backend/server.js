@@ -1,5 +1,5 @@
-const config = require("./config/config");
 const faucet = require("./faucet");
+const config = require("./config/config");
 const express = require('express');
 const cors = require('cors');
 
@@ -36,7 +36,7 @@ app.get('/request', async (req, res) => {
 faucet.runner();
 
 app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`)
+    console.log(`Faucet backend running at http://localhost:${port}`)
 });
 
 

@@ -1,5 +1,6 @@
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-const constants = require("./config/config");
+const config = require("./config/config");
+
 const { Secp256k1HdWallet
 } = require("@cosmjs/amino");
 const {
@@ -22,8 +23,8 @@ const {
  */
 const redis = require('ioredis')
 const client = redis.createClient({
-    host: redisHost,
-    port: redisPort,
+    host: config.redisHost,
+    port: config.redisPort,
 })
 client.on('connect', function() {
     console.log('Redis connected');
@@ -46,8 +47,8 @@ function msg(inputs, outputs) {
             inputs: [{
                 address: trimWhiteSpaces(inputs), //fromAddress
                 coins: [{
-                    denom: constants.DENOM,
-                    amount: (outputs.length * parseInt(constants.AMOUNT)).toString(),
+                    denom: config.DENOM,
+                    amount: (outputs.length * parseInt(config.AMOUNT)).toString(),
                 }, ],
             }, ],
             outputs: outputs, //toAddress
@@ -59,7 +60,7 @@ function msg(inputs, outputs) {
     Sign and broadcast message
  */
 async function signAndBroadcast(wallet, signerAddress, msgs, fee, memo = '') {
-    const cosmJS = await SigningStargateClient.connectWithSigner(rpcEndpoint, wallet);
+    const cosmJS = await SigningStargateClient.connectWithSigner(config.rpcEndpoint, wallet);
     return await cosmJS.signAndBroadcast(signerAddress, msgs, fee, memo); //DeliverTxResponse, 0 iff success
 }
 
@@ -72,10 +73,10 @@ async function processTransaction(wallet,addr,msgs){
             addr,
             [msgs], {
                 "amount": [{
-                    amount: (parseInt(constants.gas) * GasPrice.fromString(constants.gas_price).amount).toString(),
-                    denom: constants.DENOM
+                    amount: (parseInt(config.gas) * GasPrice.fromString(config.gas_price).amount).toString(),
+                    denom: config.DENOM
                 }],
-                "gas": constants.gas
+                "gas": config.gas
             },
             "Thanks for using Osmosis Faucet"
         );
@@ -90,9 +91,9 @@ async function processTransaction(wallet,addr,msgs){
 
 async function MnemonicWalletWithPassphrase(mnemonic) {
     const wallet = await Secp256k1HdWallet.fromMnemonic(mnemonic, {
-        prefix: constants.prefix,
+        prefix: config.prefix,
         bip39Password: '',
-        hdPaths: [stringToPath(constants.HD_PATH)]
+        hdPaths: [stringToPath(config.HD_PATH)]
     });
     const [firstAccount] = await wallet.getAccounts();
     return [wallet, firstAccount.address];
@@ -100,7 +101,7 @@ async function MnemonicWalletWithPassphrase(mnemonic) {
 
 async function validateAccount(userAddress){
     let xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("GET", restEndpoint + "/cosmos/auth/v1beta1/accounts/" + userAddress, false); // false for synchronous request
+    xmlHttp.open("GET", config.restEndpoint + "/cosmos/auth/v1beta1/accounts/" + userAddress, false); // false for synchronous request
     xmlHttp.send(null);
     const accountResponse = JSON.parse(xmlHttp.responseText);
     console.log("Account Validation Response")
@@ -160,8 +161,8 @@ function runner() {
                 faucetQueue.forEach(receiver => outputs.push({
                     address: trimWhiteSpaces(receiver),
                     coins: [{
-                        denom: constants.DENOM,
-                        amount: constants.AMOUNT,
+                        denom: config.DENOM,
+                        amount: config.AMOUNT,
                     }, ],
                 }));
                 const msgs = msg(addr, outputs);
@@ -172,7 +173,7 @@ function runner() {
             }
         } else {
             console.log("No Accounts to faucet");
-            console.log(constants.faucetQueue);
+            console.log(config.faucetQueue);
         }
     }, 3000);
 }
@@ -203,12 +204,12 @@ async function handleFaucetRequest(req) {
         }
         console.log(`${ip} has value: ${ipCount}`)
 
-        if (ipCount > constants.MAX_PER_IP) {
+        if (ipCount > config.MAX_PER_IP) {
             console.log("Ip is over limits")
-            client.expire(ip, constants.TIME_LIMIT)
+            client.expire(ip, config.TIME_LIMIT)
             return JSON.stringify({
                 status: "error",
-                message: "You have requested " + ipCount + " times. The limit  " + constants.MAX_PER_IP + " per " + secondsToHms(constants.TIME_LIMIT) + ""
+                message: "You have requested " + ipCount + " times. The limit  " + config.MAX_PER_IP + " per " + secondsToHms(config.TIME_LIMIT) + ""
             });
         } else {
             let accountResponse
@@ -220,7 +221,7 @@ async function handleFaucetRequest(req) {
                     status: "error",
                     message: accountResponse.message
                 });
-            }else if (ipCount < constants.MAX_PER_IP) {
+            }else if (ipCount < config.MAX_PER_IP) {
                 await addToQueue(userAddress);
                 return JSON.stringify({
                     status: "success",
@@ -250,4 +251,10 @@ async function getQueue() {
     return getQueue;
 }
 
-module.exports = {runner, handleFaucetRequest,MnemonicWalletWithPassphrase,processTransaction,getQueue};
+module.exports = {
+    runner, 
+    handleFaucetRequest,
+    MnemonicWalletWithPassphrase,
+    processTransaction,
+    getQueue
+};
