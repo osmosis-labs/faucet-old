@@ -10,7 +10,8 @@ export default defineConfig({
   },
   plugins: [vue()],
   define: {
-    "global": {},
+      "global": {},
+      'process.env': {}
   },
   resolve: {
     alias: {
