@@ -1,6 +1,6 @@
 
 const FAUCET_QUEUE_LIMIT = 15;
-const AMOUNT = "1";
+const AMOUNT = "1000000";
 const DENOM = "uosmo";
 const CHAIN_ID = "osmo-testnet-4";
 let faucetQueue=[];

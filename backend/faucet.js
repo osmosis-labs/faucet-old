@@ -179,7 +179,7 @@ function runner() {
             console.log("No Accounts to faucet");
             console.log(constants.faucetQueue);
         }
-    }, 3000);
+    }, 7000);
 }
 
 function secondsToHms(d) {
