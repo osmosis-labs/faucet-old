@@ -33,7 +33,10 @@
                 <div> {{asset.denomDetails.name}}</div>
                 <div> {{asset.coin.amount}}</div>
                   <div>
-                      <span v-if="asset.denomDetails.denom_units[0].aliases[0]">{{asset.amount}} {{asset.denomDetails.denom_units[0].aliases[0]}}</span>
+
+                      <span v-if="asset.denomDetails.denom_units[0].aliases">{{asset.amount}}
+                      <span v-if="asset.denomDetails.denom_units[0].aliases[0]"> {{asset.denomDetails.denom_units[0].aliases[0]}} </span>
+                      </span>
                       <span v-else>{{asset.amount}} {{asset.denomDetails.denom_units[0].denom}}</span>
                   </div>
               </div>
