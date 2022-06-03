@@ -1,4 +1,4 @@
-import { createWebHistory, createRouter } from "vue-router";
+import { createWebHashHistory, createRouter } from "vue-router";
 import Faucet from '@/components/Faucet.vue'
 import Keplr from '@/components/Keplr.vue'
 import Wallet from '@/components/Wallet.vue'
@@ -55,7 +55,7 @@ const routes = [
 
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHashHistory(),
     routes,
 });
 
