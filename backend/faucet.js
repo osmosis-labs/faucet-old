@@ -229,7 +229,7 @@ async function handleFaucetRequest(req) {
                 await addToQueue(userAddress);
                 return JSON.stringify({
                     status: "success",
-                    message: "Success, your address will receive funds shortly"
+                    message: "Success, your address "+userAddress+" will receive funds shortly"
                 });
             } else {
                 console.log("error")

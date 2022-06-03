@@ -31,16 +31,22 @@ const {account} = storeToRefs(useExplorerStore())
   <router-link class="btn btn-primary mt-3" to="/contracts">Contracts</router-link> |
   <router-link class="btn btn-primary mt-3" to="/explorer">Search</router-link> |
   <router-view />
+
+    Change Network: <a href="#" v-on:click="selectNet('testnet')" >Tesnet</a> | <a href="#" v-on:click="selectNet('mainnet')" >Mainnet</a>
 </template>
 
 <script>
 
-
-
-
-
   export default {
     name: 'App',
+      setup(){
+
+          const {chainId, rpcEndpoint} = storeToRefs(usekeplrStore())
+
+          return {
+            chainId, rpcEndpoint
+          }
+      },
       computed: {
 
       },
@@ -49,7 +55,16 @@ const {account} = storeToRefs(useExplorerStore())
 
     },
     methods: {
+        selectNet: function (network) {
+            if (network == "testnet"){
+                this.chainId = "osmo-test-1"
+                this.rpcEndpoint = "https://rpc-test.osmosis.zone"
+            }else if(network == "mainnet") {
+                this.chainId = "osmosis-1"
+                this.rpcEndpoint = "https://rpc.osmosis.zone"
+            }
 
+        }
 
     }
   }

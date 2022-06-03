@@ -41,7 +41,9 @@
             <b-card class="card light-card">
               <div v-if="queue.list[0]">
                 <b-list-group v-for="q in queue.list">
-                  <b-list-group-item class="bg-transparent">{{q}}</b-list-group-item>
+                  <b-list-group-item class="bg-transparent">
+                    <router-link :to="'/account/'+address" class="link-info"> {{q}}</router-link>
+                  </b-list-group-item>
                 </b-list-group>
               </div>
               <div v-else>

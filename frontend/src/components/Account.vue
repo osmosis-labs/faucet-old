@@ -87,6 +87,8 @@
     },
     async mounted(){
         await this.getAccount()
+      console.log("GET")
+      await this.getTxs();
     },
     methods: {
       getAccount: async  function() {
@@ -108,6 +110,14 @@
           }
          //
         }));
+      },
+      getTxs: async function (){
+        const client = await StargateClient.connect(this.rpcEndpoint);
+       // this.txs = await client.searchTx(sentFromOrTo: "");
+
+        const  transaction = await client.searchTx({sentFromOrTo: "osmo145p0kql0xxqah7xg7qkhad7vzkudxdudt7fq9v"})
+        console.log("TX")
+        console.log(transaction)
       },
       getAssets: async function(address) {
         axios.get("https://raw.githubusercontent.com/osmosis-labs/assetlists/main/osmosis-1/osmosis-frontier.assetlist.json")
