@@ -87,8 +87,8 @@
     },
     async mounted(){
         await this.getAccount()
-      console.log("GET")
-      await this.getTxs();
+     // console.log("GET")
+     // await this.getTxs();
     },
     methods: {
       getAccount: async  function() {

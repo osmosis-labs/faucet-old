@@ -57,7 +57,7 @@ const {account} = storeToRefs(useExplorerStore())
 
     },
     methods: {
-        selectNet: function (network) {
+        selectNet: async function (network) {
             if (network == "testnet"){
                 this.chainId = "osmo-test-1"
                 this.rpcEndpoint = "https://rpc-test.osmosis.zone"
