@@ -33,6 +33,18 @@
                             <b-button variant="info" v-if="isConnected"  v-on:click="getTokens">Get Tokens</b-button>
                             </b-input-group-append>
                         </b-input-group>
+
+
+                        <div class="row justify-content-start align-items-start" v-if="isConnected">
+                            <div class="col-auto mt-4 ">
+                                <router-link  :to="'/account/'+address" >
+                                    <b-button variant="info">Account Details</b-button>
+                                </router-link>
+                            </div>
+                        </div>
+
+
+
                   </b-card>
 
 

@@ -1,62 +1,51 @@
 <script setup>
-
+  import { createWebHistory, createRouter } from "vue-router";
 
 //Telescope
-//import { getSigningOsmosisClient } from 'osmojs';
-
-import Faucet from './components/Faucet.vue'
-import Keplr from './components/Keplr.vue'
-import Wallet from './components/Wallet.vue'
-import Contracts from './components/Contracts.vue'
-import NotFound from './components/NotFound.vue'
+// //import { getSigningOsmosisClient } from 'osmojs';
+//
+// import Faucet from './components/Faucet.vue'
+// import Keplr from './components/Keplr.vue'
+// import Wallet from './components/Wallet.vue'
+// import Contracts from './components/Contracts.vue'
+// import Explorer from './components/Explorer.vue'
+// import NotFound from './components/NotFound.vue'
 
 import { storeToRefs } from 'pinia'
 import { usekeplrStore } from './stores/keplr'
 import { useFaucetStore } from './stores/faucet'
 import { useContractStore } from './stores/contract'
+import { useExplorerStore } from './stores/explorer'
 
 const {isNetworkAdded, chainId, rpcEndpoint, address,resultTx } = storeToRefs(usekeplrStore())
 const {form, wallet, queue, alert } = storeToRefs(useFaucetStore())
+const {account} = storeToRefs(useExplorerStore())
 
 
 </script>
 
 <template>
-  <a class="btn btn-primary" href="#/" >Faucet</a> |
-  <a class="btn btn-primary" href="#/keplr">Connect Keplr</a> |
-  <a class="btn btn-primary" href="#/wallet">Create Wallet</a> |
-  <a class="btn btn-primary" href="#/contracts">Contracts</a> |
-  <component :is="currentView" />
+  <router-link class="btn btn-primary mt-3" to="/" >Faucet</router-link> |
+  <router-link class="btn btn-primary mt-3" to="/keplr">Connect Keplr</router-link> |
+  <router-link class="btn btn-primary mt-3" to="/wallet">Create Wallet</router-link> |
+  <router-link class="btn btn-primary mt-3" to="/contracts">Contracts</router-link> |
+  <router-link class="btn btn-primary mt-3" to="/explorer">Search</router-link> |
+  <router-view />
 </template>
 
 <script>
 
 
 
-const routes = {
-  '/': Faucet,
-  '/keplr': Keplr,
-  '/wallet': Wallet,
-  '/contracts': Contracts
-}
 
 
   export default {
     name: 'App',
-    data() {
-      return {
-      currentPath: window.location.hash
-      }
-    },
       computed: {
-          currentView() {
-              return routes[this.currentPath.slice(1) || '/'] || NotFound
-          }
+
       },
     async mounted(){
-        window.addEventListener('hashchange', () => {
-            this.currentPath = window.location.hash
-        })
+
 
     },
     methods: {
