@@ -32,7 +32,9 @@ const {account} = storeToRefs(useExplorerStore())
   <router-link class="btn btn-primary mt-3" to="/explorer">Search</router-link> |
   <router-view />
 
-    Change Network: <a href="#" v-on:click="selectNet('testnet')" >Tesnet</a> | <a href="#" v-on:click="selectNet('mainnet')" >Mainnet</a>
+    <p class="pt-3">Change Network:
+      <button  class="btn btn-primary btn-sm" href="#" v-on:click="selectNet('testnet')" >Tesnet</button> |
+      <button   class="btn btn-primary btn-sm" href="#" v-on:click="selectNet('mainnet')" >Mainnet</button></p>
 </template>
 
 <script>
