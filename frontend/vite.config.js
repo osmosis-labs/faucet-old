@@ -2,10 +2,12 @@ import { fileURLToPath, URL } from 'url'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-
+const path = require("path")
 // https://vitejs.dev/config/
+
+
+
 export default defineConfig({
-  base: "/",
   build: {
     minify: false
   },
@@ -15,12 +17,15 @@ export default defineConfig({
       'process.env': {}
   },
   resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-      process: "process/browser",
-      stream: "stream-browserify",
-      zlib: "browserify-zlib",
-      util: "util"
-    }
+    alias: [
+      { find: '@', replacement: path.resolve(__dirname, '/src'),
+        '@': fileURLToPath(new URL('./src', import.meta.url)),
+        process: "process/browser",
+        stream: "stream-browserify",
+        zlib: "browserify-zlib",
+        util: "util"
+      }
+
+    ]
   }
 })

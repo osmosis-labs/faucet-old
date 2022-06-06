@@ -7,6 +7,7 @@ import Explorer from '@/components/Explorer.vue'
 import Account from '@/components/Account.vue'
 import NotFound from '@/components/NotFound.vue'
 
+
 const routes = [
     {
         path: "/",

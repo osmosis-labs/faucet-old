@@ -1,69 +1,71 @@
-<script setup>
-  import { createWebHistory, createRouter } from "vue-router";
 
-//Telescope
-// //import { getSigningOsmosisClient } from 'osmojs';
-//
-// import Faucet from './components/Faucet.vue'
-// import Keplr from './components/Keplr.vue'
-// import Wallet from './components/Wallet.vue'
-// import Contracts from './components/Contracts.vue'
-// import Explorer from './components/Explorer.vue'
-// import NotFound from './components/NotFound.vue'
-
-import { storeToRefs } from 'pinia'
-import { usekeplrStore } from './stores/keplr'
-import { useFaucetStore } from './stores/faucet'
-import { useContractStore } from './stores/contract'
-import { useExplorerStore } from './stores/explorer'
-
-const {isNetworkAdded, chainId, rpcEndpoint, address,resultTx } = storeToRefs(usekeplrStore())
-const {form, wallet, queue, alert } = storeToRefs(useFaucetStore())
-const {account} = storeToRefs(useExplorerStore())
-
-
-</script>
 
 <template>
-  <router-link class="btn btn-primary mt-3" to="/" >Faucet</router-link> |
-  <router-link class="btn btn-primary mt-3" to="/keplr">Connect Keplr</router-link> |
-  <router-link class="btn btn-primary mt-3" to="/wallet">Create Wallet</router-link> |
-  <router-link class="btn btn-primary mt-3" to="/contracts">Contracts</router-link> |
-  <router-link class="btn btn-primary mt-3" to="/explorer">Search</router-link> |
-  <router-view />
+  <div>
+    <router-link class="btn btn-primary mt-3" to="/" >Faucet</router-link> |
+    <router-link class="btn btn-primary mt-3" to="/keplr">Connect Keplr</router-link> |
+    <router-link class="btn btn-primary mt-3" to="/wallet">Create Wallet</router-link> |
+    <router-link class="btn btn-primary mt-3" to="/contracts">Contracts</router-link> |
+    <router-link class="btn btn-primary mt-3" to="/explorer">Search</router-link> |
 
-    <p class="pt-3">Change Network:
-      <button  class="btn btn-primary btn-sm" href="#" v-on:click="selectNet('testnet')" >Tesnet</button> |
-      <button   class="btn btn-primary btn-sm" href="#" v-on:click="selectNet('mainnet')" >Mainnet</button></p>
+    <div class="container">
+      <div class="row justify-content-center mt-5">
+        <div class="col-lg-10 col-md-12 col-sm-12">
+
+              <router-view />
+
+        </div>
+      </div>
+    </div>
+
+
+    <div>
+      <button  class="btn btn-primary btn-sm"  v-on:click="selectNet('testnet')" >Tesnet</button> |
+      <button   class="btn btn-primary btn-sm"  v-on:click="selectNet('mainnet')" >Mainnet</button>
+    </div>
+
+  </div>
+
+
+
 </template>
 
 <script>
+  import { storeToRefs } from 'pinia'
+  import { usekeplrStore } from './stores/keplr'
 
   export default {
     name: 'App',
-      setup(){
 
-          const {chainId, rpcEndpoint} = storeToRefs(usekeplrStore())
+    setup(){
+
+          const {chainId, rpcEndpoint,isTestnet} = storeToRefs(usekeplrStore())
 
           return {
-            chainId, rpcEndpoint
+            chainId, rpcEndpoint, isTestnet
           }
       },
       computed: {
 
       },
-    async mounted(){
-
+     mounted(){
+      //this.selectNet('testnssset')
 
     },
     methods: {
         selectNet: async function (network) {
+
             if (network == "testnet"){
-                this.chainId = "osmo-test-1"
-                this.rpcEndpoint = "https://rpc-test.osmosis.zone"
+               // storage.setStorageSync("chainId", "osmo-test-1");
+                this.isTestnet = true;
+                this.chainId = "osmo-test-1";
+                this.rpcEndpoint = "https://rpc-test.osmosis.zone";
+
             }else if(network == "mainnet") {
-                this.chainId = "osmosis-1"
-                this.rpcEndpoint = "https://rpc.osmosis.zone"
+              //  storage.setStorageSync("chainId", "osmosis-1");
+              this.isTestnet = false;
+              this.chainId = "osmosis-1";
+                this.rpcEndpoint = "https://rpc.osmosis.zone";
             }
 
         }

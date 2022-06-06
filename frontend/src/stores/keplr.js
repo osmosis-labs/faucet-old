@@ -11,6 +11,8 @@ export const usekeplrStore = defineStore('keplr', {
         rpcEndpoint: 'https://rpc-test.osmosis.zone',
         address: null,
         resultTx: '',
+        isTestnet: true,
+
     }),
 
     // optional getters

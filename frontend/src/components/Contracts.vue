@@ -1,47 +1,39 @@
 
 
 <template>
-
-  <div class="container" id="app">
-    <div class="row justify-content-center mt-5">
-      <div class="col-lg-10 col-md-12 col-sm-12">
-        <b-card class="light-card">
-          <div class="row">
+    <b-card class="light-card  mb-3">
+        <div class="row">
             <div class="col m-3">
-              Simple utility to see current contracts from the <b> {{rpcEndpoint}}</b> endpoint running <b> {{chainId}}</b>.
+                Simple utility to see current contracts from the <b> {{rpcEndpoint}}</b> endpoint running <b> {{chainId}}</b>.
             </div>
-          </div>
-          <div class="row">
+        </div>
+        <div class="row">
             <div class="col-lg-6" v-for="contract in contracts">
-              <b-card no-body border-variant="dark" :header="'Code ID: '+contract.codeId" class="mb-3" >
-                <b-card-body class="text-center">
-                  <b-card-title>{{contract.label}}</b-card-title>
-                  <b-card-text>
-                    <div class="row">
-                      <div class="col">
-                        <b>Address:</b> {{contract.address}}
-                      </div>
-                      <div class="col">
-                        <b> Creator:</b> {{contract.creator}}
-                      </div>
-                    </div>
-                  </b-card-text>
+                <b-card no-body border-variant="dark" :header="'Code ID: '+contract.codeId" class="mb-3" >
+                    <b-card-body class="text-center">
+                        <b-card-title>{{contract.label}}</b-card-title>
+                        <b-card-text>
+                            <div class="row">
+                                <div class="col">
+                                    <b>Address:</b> {{contract.address}}
+                                </div>
+                                <div class="col">
+                                    <b> Creator:</b> {{contract.creator}}
+                                </div>
+                            </div>
+                        </b-card-text>
 
-                </b-card-body>
-                <template #footer>
-                  <small>
-                    <span v-if="contract.admin">Admin: {{contract.admin}}</span>
-                    <span v-else> <b-badge variant="primary" >No admin defined</b-badge> </span>
-                  </small>
-                </template>
-              </b-card>
+                    </b-card-body>
+                    <template #footer>
+                        <small>
+                            <span v-if="contract.admin">Admin: {{contract.admin}}</span>
+                            <span v-else> <b-badge variant="primary" >No admin defined</b-badge> </span>
+                        </small>
+                    </template>
+                </b-card>
             </div>
-          </div>
-        </b-card>
-      </div>
-    </div>
-  </div>
-
+        </div>
+    </b-card>
 </template>
 
 <script>
