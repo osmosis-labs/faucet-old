@@ -7,3 +7,5 @@ You should run the frontend and backend together in your local environment.
 
 ### Backend
 The backend needs to be deployed to a server or ran locally for development, pm2 is used to manage the process. 
+
+..test
