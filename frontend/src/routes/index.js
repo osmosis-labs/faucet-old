@@ -2,10 +2,13 @@ import { createWebHashHistory, createRouter } from "vue-router";
 import Faucet from '@/components/Faucet.vue'
 import Keplr from '@/components/Keplr.vue'
 import Wallet from '@/components/Wallet.vue'
-import Contracts from '@/components/Contracts.vue'
 import Explorer from '@/components/Explorer.vue'
 import Account from '@/components/Account.vue'
 import NotFound from '@/components/NotFound.vue'
+
+// Contracts'
+import ContractsIndex from '@/components/contracts/Index.vue'
+import Contracts from '@/components/contracts/Contracts.vue'
 
 
 const routes = [
@@ -26,6 +29,11 @@ const routes = [
     },
     {
         path: "/contracts",
+        name: "ContractsIndex",
+        component: ContractsIndex,
+    },
+    {
+        path: "/contracts/list",
         name: "Contracts",
         component: Contracts,
     },

@@ -65,7 +65,6 @@
         </b-card>
       </b-tab>
     </b-tabs>
-
     </div>
   </div>
 
@@ -76,6 +75,60 @@
         Faucet is only available on testnet. You are currently connected to {{chainId}} mainnet.
       </div>
     </div>
+  </div>
+
+
+
+  <div class="row">
+    <div class="col text-white">
+      <h4 >Recent Transactions</h4>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col text-start text-white">
+      <div class="text-center"> Total transactions found: {{txs.total_count}}</div>
+      <b-pagination align="fill" limit="10" v-model="txs.currentPage" pills :total-rows="txs.total_count"  :per-page="txs.per_page"  size="md" v-on:click="changePage(txs.currentPage)"></b-pagination>
+    </div>
+  </div>
+
+  <div class="card light-card ">
+    <table class="table text-white" style="table-layout: fixed;">
+      <thead>
+      <tr>
+        <th scope="col">Tx Hash</th>
+        <th scope="col">Events</th>
+        <th scope="col">Height</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr  v-for="(txList, index) in txs.list">
+        <th scope="row text-start">{{shortString(txList.hash)}}</th>
+        <td class="text-start" style="overflow-wrap: break-word;">
+          <!--                      <b-badge variant="success">  events</b-badge>-->
+
+
+
+          <b-button   v-b-toggle="'coll-'+index" variant="primary">{{txList.tx_result.events.length}} events</b-button>
+          <b-collapse :id="'coll-'+index" >
+            <div v-for="event in txList.tx_result.events">
+              <b-badge v-if="event.type == 'coin_spent' || event.type == 'coin_received'" variant="success"> {{event.type}}</b-badge>
+              <b-badge v-else> {{event.type}}</b-badge>
+              <div class="row">
+                <div v-for="attr in event.attributes" class="col-12" >
+                  <b-badge  class="ms-4" >{{decode(attr.key)}}</b-badge>  {{decode(attr.value)}}
+                </div>
+              </div>
+            </div>
+          </b-collapse>
+
+
+
+        </td>
+        <td>{{txList.height}}</td>
+      </tr>
+      </tbody>
+    </table>
   </div>
 
 </template>
@@ -89,22 +142,24 @@
   import { usekeplrStore } from '../stores/keplr'
   import { useFaucetStore } from '../stores/faucet'
   import { storeToRefs } from 'pinia'
-
+  import base64 from "base-64";
 
   export default {
 
     name: 'Faucet',
     setup(){
-      const {form, wallet, queue, alert } = storeToRefs(useFaucetStore())
+      const {form, wallet, queue, alert, txs } = storeToRefs(useFaucetStore())
       const {isNetworkAdded, chainId, rpcEndpoint, address,resultTx, isTestnet } = storeToRefs(usekeplrStore())
 
       return {
-        form, wallet, queue, alert,
+        form, wallet, queue, alert, txs,
         isNetworkAdded, chainId, rpcEndpoint, address,resultTx, isTestnet
       }
     },
-    mounted() {
+    async mounted() {
       this.getQueue()
+      const getTxCount = await this.getTxCount();
+      const latest = await  this.latestTxs(1);
     },
     methods: {
         submit() {
@@ -158,7 +213,83 @@
       },
       async copy(s) {
         await navigator.clipboard.writeText(s);
-      }
+      },
+      changePage: function(pageNumber){
+        this.txs.list = {};
+        this.latestTxs(pageNumber);
+      },
+      decode: function(text){
+        return base64.decode(text);
+      },
+      shortString: function (string) {
+
+        let begin = string.substring(0, 8);
+        let end = string.substring(string.length - 8);
+
+        return ""+begin+"..."+end+"";
+      },
+      getTxCount: async function () {
+
+        console.log("keplrStore...")
+        await axios.post(this.rpcEndpoint,
+                {
+                  "jsonrpc": "2.0",
+                  "id": 998254319713,
+                  "method": "tx_search",
+                  "params": {
+                    "query": "tx.height>=0 AND tx.height<=9007199254740991",
+                    "page": "1",
+                    "order_by": "desc"
+                  }
+                })
+                .then(response => {
+                  console.log("Count");
+
+                  this.txs.total_count = parseInt(response.data.result.total_count);
+                  let pageCount = response.data.result.total_count/30;
+                  this.txs.pages = Math.trunc(pageCount)+1;
+                  return true;
+
+                })
+                .catch(error => {
+                  console.log(error);
+                  return false;
+                });
+
+        return true
+
+      },
+      latestTxs: async function (page) {
+
+        console.log("latestTxs... page:"+page)
+        let that = this;
+        let pageNumber = page;
+
+        let payload = {
+          "jsonrpc": "2.0",
+          "id": 998254319713,
+          "method": "tx_search",
+          "params": {
+            "page": ""+pageNumber+"",
+            // "order_by": "desc",
+            // "query": "message.module='bank' AND tx.height>=0 AND tx.height<=9007199254740991",
+            //"query": "message.module='bank' AND transfer.recipient='"+this.$route.params['address']+"' AND tx.height>=0 AND tx.height<=9007199254740991",
+            "query": "tx.height>=0 AND tx.height<=9007199254740991",
+
+          }
+        };
+        axios.post(this.rpcEndpoint,payload)
+                .then(response => {
+                  console.log(response)
+                  this.txs.list = response.data.result.txs.reverse();
+                })
+                .catch(error => {
+                  console.log(error);
+                });
+
+
+
+      },
 
     }
   }

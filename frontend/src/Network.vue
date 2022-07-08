@@ -30,13 +30,13 @@
         },
         mounted(){
             //this.selectNet('testnssset')
-            this.chainId = "osmo-tessst-1";
+            this.chainId = "osmo-test-4";
         },
         methods: {
             selectNet: function (network) {
 
                 if (network == "testnet"){
-                    this.chainId = "osmo-test-1";
+                    this.chainId = "osmo-test-4";
                     this.rpcEndpoint = "https://rpc-test.osmosis.zone";
                 }else if(network == "mainnet") {
                     this.chainId = "osmosis-1";

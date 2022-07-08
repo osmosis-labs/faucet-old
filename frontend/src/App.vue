@@ -20,8 +20,9 @@
 
 
     <div>
-      <button  class="btn btn-primary btn-sm"  v-on:click="selectNet('testnet')" >Tesnet</button> |
-      <button   class="btn btn-primary btn-sm"  v-on:click="selectNet('mainnet')" >Mainnet</button>
+      <!-- <button  class="btn btn-primary btn-sm"  v-on:click="selectNet('testnet')" >Tesnet</button> | -->
+      <!-- <button  class="btn btn-primary btn-sm"  v-on:click="selectNet('relaunch')" >Relaunch</button> | -->
+      <!-- <button   class="btn btn-primary btn-sm"  v-on:click="selectNet('mainnet')" >Mainnet</button> -->
     </div>
 
   </div>
@@ -58,7 +59,7 @@
             if (network == "testnet"){
                // storage.setStorageSync("chainId", "osmo-test-1");
                 this.isTestnet = true;
-                this.chainId = "osmo-test-1";
+                this.chainId = "osmo-test-4";
                 this.rpcEndpoint = "https://rpc-test.osmosis.zone";
 
             }else if(network == "mainnet") {

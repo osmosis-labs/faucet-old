@@ -14,7 +14,7 @@
       </div>
       <div class="mb-4">
         <b-input-group class="mt-3" prepend="mnemonic">
-          <b-form-input  v-model="wallet.mnemonic"></b-form-input>
+          <b-form-textarea  v-model="wallet.mnemonic"></b-form-textarea>
           <b-input-group-append>
             <b-button variant="info" @click="copy(wallet.mnemonic)">Copy</b-button>
           </b-input-group-append>
