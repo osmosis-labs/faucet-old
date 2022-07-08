@@ -11,8 +11,15 @@ export const useFaucetStore = defineStore('faucet', {
             payload: {
                 mnemonic: "",
                 address: "",
-                animate: false
-            }
+                animate: false,
+                code_id: "",
+            },
+            VoteOptionSelected: 'Yes',
+            VoteOptions: [
+                { value: 'Yes', text: 'VOTE YES' },
+                { value: 'No', text: 'VOTE NO' },
+                { value: 'Veto', text: 'VOTE NO WITH VETO'}
+              ]
         },
         wallet: {
             address: "No address generated",
@@ -29,11 +36,23 @@ export const useFaucetStore = defineStore('faucet', {
                 status: "",
                 message: ""
             },
+            vote: {
+                show: false,
+                status: "",
+                message: ""
+            },
             wallet: {
                 show: false,
                 status: "",
                 message: ""
             }
+        },
+        txs: {
+            currentPage:1,
+            total_count:null,
+            per_page:30,
+            pages:null,
+            list: []
         }
     }),
 

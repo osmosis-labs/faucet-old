@@ -13,11 +13,42 @@ const {
 const restAPI = process.env.BLOCKCHAIN_REST_SERVER;
 const rpc = process.env.RPC;
 const mnemonic = process.env.FAUCET_MNEMONIC;
+const valMnemonic = process.env.VALIDATOR_MNEMONIC;
 const msgSendTypeUrl = "/cosmos.bank.v1beta1.MsgMultiSend";
 const {
     MsgMultiSend,
     fromPartial
 } = require("cosmjs-types/cosmos/bank/v1beta1/tx");
+const Long = require("long")
+
+
+/*
+OsmoJS test for voting
+*/
+const  { getSigningOsmosisClient, osmosis, cosmos } =  require('osmojs');
+//const { SigningStargateClient } = require('@cosmjs/stargate');
+
+
+ const messages = {
+    // osmosis
+    // ...osmosis.gamm.v1beta1.MessageComposer.withTypeUrl,
+    // ...osmosis.superfluid.MessageComposer.withTypeUrl,
+    // ...osmosis.lockup.MessageComposer.withTypeUrl,
+    // cosmos
+    // ...cosmos.distribution.v1beta1.MessageComposer.fromPartial,
+    // ...cosmos.bank.v1beta1.MessageComposer.fromPartial,
+    // ...cosmos.staking.v1beta1.MessageComposer.fromPartial,
+    ...cosmos.gov.v1beta1.MessageComposer.fromPartial
+  };
+
+
+
+  
+//   const osmoClient = SigningStargateClient = await getSigningOsmosisClient({
+//     rpcEndpoint: rpc,
+//     signer // OfflineSigner
+//   });
+
 
 
 /*
@@ -61,6 +92,25 @@ function msg(inputs, outputs) {
 }
 
 /*
+    Compose vote message
+ */
+    function votemsg(inputs, outputs) {
+        return {
+            typeUrl: msgSendTypeUrl,
+            value: MsgMultiSend.fromPartial({
+                inputs: [{
+                    address: trimWhiteSpaces(inputs), //fromAddress
+                    coins: [{
+                        denom: constants.DENOM,
+                        amount: (outputs.length * parseInt(constants.AMOUNT)).toString(),
+                    }, ],
+                }, ],
+                outputs: outputs, //toAddress
+            }),
+        }
+    }
+
+/*
     Sign and broadcast message
  */
 async function signAndBroadcast(wallet, signerAddress, msgs, fee, memo = '') {
@@ -92,6 +142,32 @@ async function processTransaction(wallet,addr,msgs){
         throw err
     }
 }
+
+async function voteTransaction(wallet,addr,msgs){
+    try {
+        let faucetQueue
+        faucetQueue = await getFaucetQueue();
+        const response = await signAndBroadcast(
+            wallet,
+            addr,
+            [msgs], {
+                "amount": [{
+                    amount: (parseInt(constants.gas) * GasPrice.fromString(constants.gas_price).amount).toString(),
+                    denom: constants.DENOM
+                }],
+                "gas": constants.gas
+            },
+            "Thanks for using Osmosis Faucet"
+        );
+        faucetQueue.forEach(function(address) {
+            removeFromQueue(address)
+        })
+    } catch (err) {
+        console.error('Unable to process transaction')
+        throw err
+    }
+}
+
 
 async function MnemonicWalletWithPassphrase(mnemonic) {
     const wallet = await Secp256k1HdWallet.fromMnemonic(mnemonic, {
@@ -126,11 +202,35 @@ async function getFaucetQueue() {
     }
 }
 
+async function getVoteQueue() {
+    let voteQueue
+    try {
+        voteQueue = await client.lrange('voteQueue',0, -1)
+        console.log("Getting Voting Queue")
+        console.log(voteQueue);
+        return voteQueue
+    } catch (err) {
+        console.error('Unable to get vote queue')
+        throw err
+    }
+}
+
 async function addToQueue(userAddress){
     let addQueue
     try {
         addQueue = await client.lpush(['faucetQueue',userAddress])
         console.log(userAddress, "ADDED TO LIST Count:",+addQueue);
+    } catch (err) {
+        console.error('addQueue: could not increment key')
+        throw err
+    }
+}
+
+async function addToVoteQueue(codeId){
+    let addQueue
+    try {
+        addQueue = await client.lpush(['voteQueue',codeId])
+        console.log(codeId, "Vote added - Count:",+addQueue);
     } catch (err) {
         console.error('addQueue: could not increment key')
         throw err
@@ -151,17 +251,33 @@ async function removeFromQueue(address) {
 
 }
 
+
+async function removeFromVotingQueue(codeId) {
+    console.log("Removing code id"+codeId)
+    let removeFromQueue
+    try {
+        removeFromQueue = await client.lrem('voteQueue',-1,codeId)
+    console.log("removeFromQueue")
+    console.log(removeFromQueue);
+} catch (err) {
+        console.error('isOverLimit: could not increment key')
+        throw err
+    }
+
+}
+
 function runner() {
     setInterval(async function() {
 
-        let faucetQueue
-        faucetQueue = await getFaucetQueue();
-
+/*
+Faucet Queue
+*/
+let faucetQueue
+faucetQueue = await getFaucetQueue();
         if (faucetQueue.length > 0) {
             try {
                 let [wallet, addr] = await MnemonicWalletWithPassphrase(mnemonic);
                 let outputs = [];
-
                 faucetQueue.forEach(receiver => outputs.push({
                     address: trimWhiteSpaces(receiver),
                     coins: [{
@@ -179,6 +295,68 @@ function runner() {
             console.log("No Accounts to faucet");
             console.log(constants.faucetQueue);
         }
+
+/*
+Voting Queue
+*/
+
+let voteQueue
+voteQueue = await getVoteQueue();
+
+if (voteQueue.length > 0) {
+    try {
+        let [wallet, addr] = await MnemonicWalletWithPassphrase(valMnemonic);
+
+        for (const codeId of voteQueue) {
+
+            console.log("Voting for"+codeId);
+
+                  const voteMsg = messages.vote({
+                    proposalId: ""+codeId+"",
+                    voter: addr,
+                    option: 1,
+                  });
+
+                  console.log(voteMsg)
+                  
+                  try {
+                    const response = await signAndBroadcast(
+                        wallet,
+                        addr,
+                        [voteMsg],
+                        {
+                            "amount": [{
+                                amount: (parseInt(constants.gas) * GasPrice.fromString(constants.gas_price).amount).toString(),
+                                denom: constants.DENOM
+                            }],
+                            "gas": constants.gas
+                        },
+                        "Thanks for using Osmosis Faucet"
+                    );
+                        console.log(response)
+                        console.log(response)
+        
+                        
+                } catch (err) {
+                    console.error('Unable to process transaction')
+                    throw err
+                }
+
+            removeFromVotingQueue(codeId)
+        };
+     
+       // const msgs = votemsg(addr);
+       // await voteTransaction(wallet,addr,msgs)
+
+    } catch (e) {
+        console.log("Transaction Failed: ", e);
+    }   
+
+} else {
+    console.log("No Accounts to faucet");
+    console.log(constants.faucetQueue);
+}
+
     }, 7000);
 }
 
@@ -226,15 +404,62 @@ async function handleFaucetRequest(req) {
                     message: accountResponse.message
                 });
             }else if (ipCount < constants.MAX_PER_IP) {
+                let [wallet, addr] = await MnemonicWalletWithPassphrase(mnemonic);
                 await addToQueue(userAddress);
                 return JSON.stringify({
                     status: "success",
-                    message: "Success, your address "+userAddress+" will receive funds shortly"
+                    message: "Success, your address "+userAddress+" will receive funds shortly from "+addr+""
                 });
             } else {
                 console.log("error")
                 console.log(accountResponse);
                 return JSON.stringify({status: "error", message: "Your account cannot get funds at this time. "
+                });
+            }
+        }
+    } catch (e) {
+        console.log(e);
+        return JSON.stringify({
+            status: "error",
+            message: e.toString()
+        });
+    }
+
+}
+
+
+async function handleFaucetVote(req) {
+    let codeId = req.body.code_id
+    let vote = req.body.vote
+   // const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+    const ip = "demo"
+    try {
+        let voteCount
+        try {
+            voteCount = await client.incr(ip+'_vote')
+        } catch (err) {
+            console.error('voteCount: could not increment key')
+            throw err
+        }
+        console.log(`${ip} has value: ${voteCount}`)
+
+        if (voteCount > constants.MAX_VOTE_PER_IP) {
+            console.log("voteCount is over limits")
+            client.expire(ip, constants.TIME_LIMIT)
+            return JSON.stringify({
+                status: "error",
+                message: "You have voted " + voteCount + " times. The limit  " + constants.MAX_VOTE_PER_IP + " per " + secondsToHms(constants.TIME_LIMIT) + ""
+            });
+        } else {
+           if (voteCount < constants.MAX_VOTE_PER_IP) {
+                await addToVoteQueue(codeId);
+                return JSON.stringify({
+                    status: "success",
+                    message: "Success, your contract "+codeId+" will receive a vote shortly from the faucet"
+                });
+            } else {
+                console.log("error")
+                return JSON.stringify({status: "error", message: "Your cannot vote at this time. "
                 });
             }
         }
@@ -255,4 +480,4 @@ async function getQueue() {
     return getQueue;
 }
 
-module.exports = {runner, handleFaucetRequest,MnemonicWalletWithPassphrase,processTransaction,getQueue};
+module.exports = {runner, handleFaucetRequest,handleFaucetVote,MnemonicWalletWithPassphrase,processTransaction,getQueue};

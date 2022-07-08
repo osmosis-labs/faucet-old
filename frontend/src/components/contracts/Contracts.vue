@@ -38,9 +38,9 @@
 
 <script>
 
-  import { usekeplrStore } from '../stores/keplr'
-  import { useFaucetStore } from '../stores/faucet'
-  import { useContractStore } from '../stores/contract'
+  import { usekeplrStore } from '../../stores/keplr'
+  import { useFaucetStore } from '../../stores/faucet'
+  import { useContractStore } from '../../stores/contract'
   import { storeToRefs } from 'pinia'
 
   import { CosmWasmClient } from "cosmwasm";
@@ -66,7 +66,7 @@
         const client = await CosmWasmClient.connect(this.rpcEndpoint);
         console.log(client);
 
-        for (let codeId = 1; codeId < 100; codeId++) {
+        for (let codeId = 1; codeId < 1000; codeId++) {
           let formatCodeId = codeId.toLocaleString('en-US', {
             minimumIntegerDigits: 2,
             useGrouping: false
