@@ -1,3 +1,4 @@
+require('newrelic');
 const faucet = require("./faucet");
 const express = require('express');
 const app = express();
