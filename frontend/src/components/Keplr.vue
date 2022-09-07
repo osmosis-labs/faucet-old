@@ -55,6 +55,7 @@
     import { storeToRefs } from 'pinia'
     import { usekeplrStore } from '../stores/keplr'
     import { useFaucetStore } from '../stores/faucet'
+    import { config } from '../config.js'
 
     export default {
         name: 'keplrStart',
@@ -76,8 +77,8 @@
                     await window.keplr.experimentalSuggestChain({
                         chainId: this.chainId,
                         chainName: "Osmosis Testnet",
-                        rpc: "https://rpc-test.osmosis.zone",
-                        rest: "https://lcd-test.osmosis.zone",
+                        rpc: config.RPC_ENDPOINT,
+                        rest: config.REST_ENDPOINT,
                         stakeCurrency: {
                             coinDenom: "OSMO",
                             coinMinimalDenom: "uosmo",
