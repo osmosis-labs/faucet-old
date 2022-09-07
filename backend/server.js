@@ -6,8 +6,14 @@ const cors = require('cors');
 const app = express();
 const port = config.port
 
-app.use(cors());
 app.use(express.json());
+
+var corsOptions = {
+    origin: '*',
+    optionsSuccessStatus: 200 // For legacy browser support
+}
+
+app.use(cors(corsOptions));
 
 app.post('/request', async (req, res) => {
     try {

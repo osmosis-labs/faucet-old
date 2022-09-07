@@ -8,6 +8,7 @@ RUN npm install
 COPY . .
 
 ENV FAUCET_MNEMONIC ""
+ENV VALIDATOR_MNEMONIC ""
 ENV PORT 8080
 ENV REST_ENDPOINT "https://lcd-test.osmosis.zone"
 ENV RPC_ENDPOINT "https://rpc-test.osmosis.zone"

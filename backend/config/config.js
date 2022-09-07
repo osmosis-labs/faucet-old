@@ -8,7 +8,8 @@ require("dotenv").config();
 const port = process.env.PORT || 8080;
 
 // Mnemonic of the Faucet
-const mnemonic = process.env.FAUCET_MNEMONIC;
+const FAUCET_MNEMONIC = process.env.FAUCET_MNEMONIC;
+const VALIDATOR_MNEMONIC = "";
 
 // Endpoint used for rest queries
 const restEndpoint = process.env.REST_ENDPOINT || "https://lcd-test.osmosis.zone";
@@ -20,18 +21,19 @@ const rpcEndpoint = process.env.RPC_ENDPOINT || "https://rpc-test.osmosis.zone";
 const redisPort = process.env.REDIS_PORT || 6379
 const redisHost = process.env.REDIS_HOST || 'localhost'
 
+const CHAIN_ID = process.env.CHAIN_ID || "osmo-testnet-4";
+
 // ----------------------------------------------------------------
 // Faucet backend parameters 
 // ----------------------------------------------------------------
 
 const FAUCET_QUEUE_LIMIT = 15;
-const AMOUNT = "1";
+const AMOUNT = "500000";
 const DENOM = "uosmo";
-const CHAIN_ID = "osmo-testnet-4";
 let faucetQueue=[];
 const prefix= "osmo";
-const gas_price = "0uosmo";
-const gas = "500000";
+const gas_price = "0.025uosmo";
+const gas = "20000000";
 const TIME_LIMIT = 3600 * 2; // 3600 seconds x 2 = 2 hours
 const MAX_PER_IP = 10;
 const MAX_VOTE_PER_IP = 20;
@@ -39,7 +41,8 @@ const HD_PATH = "m/44'/118'/0'/0/0";
 
 module.exports = {
     port,
-    mnemonic,
+    FAUCET_MNEMONIC,
+    VALIDATOR_MNEMONIC,
     restEndpoint,
     rpcEndpoint,
     redisPort,

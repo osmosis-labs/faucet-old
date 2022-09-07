@@ -11,7 +11,6 @@ const {
     stringToPath
 } = require("@cosmjs/crypto");
 
-const valMnemonic = process.env.FAUCET_MNEMONIC;
 const msgSendTypeUrl = "/cosmos.bank.v1beta1.MsgMultiSend";
 const {
     MsgMultiSend,
@@ -113,8 +112,10 @@ async function signAndBroadcast(wallet, signerAddress, msgs, fee, memo = '') {
 
 async function processTransaction(wallet, addr, msgs) {
     try {
-        let faucetQueue
-        faucetQueue = await getFaucetQueue();
+        let faucetQueue = await getFaucetQueue();
+
+        console.log(JSON.stringify(msgs, null, 4));
+
         const response = await signAndBroadcast(
             wallet,
             addr,
@@ -269,7 +270,7 @@ function runner() {
         faucetQueue = await getFaucetQueue();
         if (faucetQueue.length > 0) {
             try {
-                let [wallet, addr] = await MnemonicWalletWithPassphrase(mnemonic);
+                let [wallet, addr] = await MnemonicWalletWithPassphrase(config.FAUCET_MNEMONIC);
                 let outputs = [];
                 faucetQueue.forEach(receiver => outputs.push({
                     address: trimWhiteSpaces(receiver),
@@ -298,7 +299,7 @@ function runner() {
 
         if (voteQueue.length > 0) {
             try {
-                let [wallet, addr] = await MnemonicWalletWithPassphrase(valMnemonic);
+                let [wallet, addr] = await MnemonicWalletWithPassphrase(config.VALIDATOR_MNEMONIC);
 
                 for (const codeId of voteQueue) {
 
@@ -397,7 +398,7 @@ async function handleFaucetRequest(req) {
                     message: accountResponse.message
                 });
             } else if (ipCount < config.MAX_PER_IP) {
-                let [wallet, addr] = await MnemonicWalletWithPassphrase(mnemonic);
+                let [wallet, addr] = await MnemonicWalletWithPassphrase(config.FAUCET_MNEMONIC);
                 await addToQueue(userAddress);
                 return JSON.stringify({
                     status: "success",

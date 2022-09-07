@@ -31,8 +31,8 @@ services:
     environment:
       REDIS_PORT: 6379
       REDIS_HOST: redis
-      RPC_ENDPOINT: "https://rpc-edgenet.dev-osmosis.zone"
-      REST_ENDPOINT: "https://lcd-edgenet.dev-osmosis.zone"
+      RPC_ENDPOINT: ${RPC_ENDPOINT}
+      REST_ENDPOINT: ${REST_ENDPOINT}
       PORT: 8080
       FAUCET_MNEMONIC: ${FAUCET_MNEMONIC}
 
