@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+
+  # frontend:
+  #   image: faucet-frontend
+  #   container_name: faucet-frontend
+  #   build: ./frontend
+  #   restart: unless-stopped
+  #   ports:
+  #     - '3000:3000'
+  #   depends_on:
+  #     - backend
+  #   links:
+  #     - backend
+  #   environment:
+  #     FAUCET_SERVER: backend:8080
+  #     PORT: 3000
+  
+  backend:
+    image: faucet-backend
+    container_name: faucet-backend
+    build: ./backend
+    restart: unless-stopped
+    ports:
+      - '8080:8080'
+    depends_on:
+      - redis
+    links:
+      - redis
+    environment:
+      REDIS_PORT: 6379
+      REDIS_HOST: redis
+      RPC_ENDPOINT: "https://rpc-edgenet.dev-osmosis.zone/"
+      REST_ENDPOINT: "https://lcd-edgenet.dev-osmosis.zone/"
+      PORT: 8080
+      FAUCET_MNEMONIC: ${FAUCET_MNEMONIC}
+
+  redis:
+    image: redis:6.0.6
+    container_name: redis
+    command: redis-server --save 60 1 --loglevel warning 
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes: 
+      - redis:/data
+
+volumes:
+  redis:
+    driver: local
