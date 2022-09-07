@@ -2,20 +2,20 @@ version: '3.8'
 
 services:
 
-  # frontend:
-  #   image: faucet-frontend
-  #   container_name: faucet-frontend
-  #   build: ./frontend
-  #   restart: unless-stopped
-  #   ports:
-  #     - '3000:3000'
-  #   depends_on:
-  #     - backend
-  #   links:
-  #     - backend
-  #   environment:
-  #     FAUCET_SERVER: backend:8080
-  #     PORT: 3000
+  frontend:
+    image: faucet-frontend
+    container_name: faucet-frontend
+    build: ./frontend
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    depends_on:
+      - backend
+    links:
+      - backend
+    environment:
+      FAUCET_BACKEND: backend:8080
+      PORT: 3000
   
   backend:
     image: faucet-backend

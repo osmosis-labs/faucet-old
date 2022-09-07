@@ -42,9 +42,7 @@
                     this.chainId = "osmosis-1";
                     this.rpcEndpoint = "https://rpc.osmosis.zone";
                 }
-
             }
-
         }
     }
 </script>
