@@ -9,3 +9,6 @@ upd:
 
 down:
 	docker-compose down
+
+rebuild:
+	docker-compose up --build --force-recreate --no-deps -d frontend backend
