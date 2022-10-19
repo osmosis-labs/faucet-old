@@ -37,7 +37,7 @@
 
                 if (network == "testnet"){
                     this.chainId = "osmo-test-4";
-                    this.rpcEndpoint = "https://rpc-test.osmosis.zone";
+                    this.rpcEndpoint = "https://rpc.testnet.osmosis.zone";
                 }else if(network == "mainnet") {
                     this.chainId = "osmosis-1";
                     this.rpcEndpoint = "https://rpc.osmosis.zone";

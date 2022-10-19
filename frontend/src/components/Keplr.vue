@@ -76,7 +76,7 @@
                     await window.keplr.experimentalSuggestChain({
                         chainId: this.chainId,
                         chainName: "Osmosis Testnet",
-                        rpc: "https://rpc-test.osmosis.zone",
+                        rpc: "https://rpc.testnet.osmosis.zone",
                         rest: "https://lcd-test.osmosis.zone",
                         stakeCurrency: {
                             coinDenom: "OSMO",
