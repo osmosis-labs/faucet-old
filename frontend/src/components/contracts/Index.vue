@@ -11,7 +11,7 @@
         <div>
                     <form>
           <div class="mb-4">
-            <b-input-group class="mt-3 animate__animated " prepend="Code ID">
+            <b-input-group class="mt-3 animate__animated " prepend="Proposal ID">
 
             <b-form-input  v-model="form.payload.code_id"  @keypress="onlyNumber" type="number"></b-form-input>
              <!-- <b-form-select v-model="form.VoteOptionSelected" :options="form.VoteOptions"></b-form-select> -->
