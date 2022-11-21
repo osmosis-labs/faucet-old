@@ -7,7 +7,7 @@ export const usekeplrStore = defineStore('keplr', {
 
     state: () => ({
         isNetworkAdded: false,
-        chainId: 'osmo-test-4',
+        chainId: 'v13.0.0-rc3-testnet',
         rpcEndpoint: 'https://rpc-test.osmosis.zone',
         address: null,
         resultTx: '',

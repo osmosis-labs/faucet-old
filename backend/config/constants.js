@@ -2,7 +2,7 @@
 const FAUCET_QUEUE_LIMIT = 15;
 const AMOUNT = "100000000";
 const DENOM = "uosmo";
-const CHAIN_ID = "osmo-testnet-4";
+const CHAIN_ID = "v13.0.0-rc3-testnet";
 let faucetQueue=[];
 const prefix= "osmo";
 const gas_price = "0.025uosmo";
