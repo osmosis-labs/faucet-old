@@ -9,7 +9,7 @@
         </div>
         <div class="row">
             <div class="col-lg-6" v-for="contract in contracts">
-                <b-card no-body border-variant="dark" :header="'Proposal ID: '+contract.codeId" class="mb-3" >
+                <b-card no-body border-variant="dark" :header="'Code ID: '+contract.codeId" class="mb-3" >
                     <b-card-body class="text-center">
                         <b-card-title>{{contract.label}}</b-card-title>
                         <b-card-text>

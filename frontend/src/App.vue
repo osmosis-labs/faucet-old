@@ -59,8 +59,8 @@
             if (network == "testnet"){
                // storage.setStorageSync("chainId", "osmo-test-1");
                 this.isTestnet = true;
-                this.chainId = "v13.0.0-rc3-testnet";
-                this.rpcEndpoint = "https://rpc-v13-devnet.osmosis.zone";
+                this.chainId = "osmo-test-4";
+                this.rpcEndpoint = "https://rpc-test.osmosis.zone";
 
             }else if(network == "mainnet") {
               //  storage.setStorageSync("chainId", "osmosis-1");

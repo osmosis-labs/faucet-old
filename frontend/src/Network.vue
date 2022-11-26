@@ -36,8 +36,8 @@
             selectNet: function (network) {
 
                 if (network == "testnet"){
-                    this.chainId = "v13.0.0-rc3-testnet";
-                    this.rpcEndpoint = "https://rpc-v13-devnet.osmosis.zone";
+                    this.chainId = "osmo-test-4";
+                    this.rpcEndpoint = "https://rpc-test.osmosis.zone";
                 }else if(network == "mainnet") {
                     this.chainId = "osmosis-1";
                     this.rpcEndpoint = "https://rpc.osmosis.zone";
