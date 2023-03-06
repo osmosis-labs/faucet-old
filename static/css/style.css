@@ -1,0 +1,66 @@
+body {
+    background: rgb(22, 16, 50);
+    background: linear-gradient(90deg, rgba(22, 16, 50, 1) 0%, rgba(45, 30, 90, 1) 100%);
+    color: #fff;
+    overflow: hidden;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    background-color: rgba(14, 11, 35, 0.9); 
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.form-control {
+    background-color: rgba(255, 255, 255, 0.3);
+    color: #fff;
+    border: none;
+}
+
+.form-control:focus {
+    background-color: rgba(255, 255, 255, 0.5);
+    color: #fff;
+    box-shadow: none;
+}
+
+.btn-primary {
+    background-color: #05ce78;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #068a5a;
+}
+
+.alert {
+    margin-top: 1rem;
+}
+
+.alert-success {
+    background-color: #0eb05f;
+    border-color: #0eb05f;
+}
+
+.alert-success:hover {
+    background-color: #18a669;
+}
+
+.alert-danger {
+    background-color: #ff5a5a;
+    border-color: #ff5a5a;
+}
+
+.alert-danger:hover {
+    background-color: #e34b4b;
+}
+
+.osmosis-logo {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 2rem;
+    display: block;
+}
