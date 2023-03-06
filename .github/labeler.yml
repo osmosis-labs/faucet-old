@@ -1,5 +1,0 @@
-# Add "C:docs" test
-"C:docs":
-  - README.md
-  - x/**/*.md
-  - x/**/*/*.md
