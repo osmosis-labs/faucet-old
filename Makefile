@@ -1,2 +1,5 @@
 dev:
-	flask run --reload
+	flask run --reload --debugger
+
+run:
+	flask run
