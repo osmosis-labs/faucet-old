@@ -1,19 +1,23 @@
 $(document).ready(function() {
-    $('#request-form').on('submit', function(e) {
-        e.preventDefault();
-        var formData = $(this).serialize();
+    $('#faucet-form').submit(function(event) {
+        event.preventDefault(); // prevent form from submitting normally
+
+        var address = $('#address-input').val(); // get the address input value
+
+        // send AJAX request to the server
         $.ajax({
             url: '/fund',
-            type: 'POST',
-            data: formData,
+            data: { address: address },
+            type: 'GET',
             success: function(response) {
-                $('#address-input').val('');
-                $('#success-alert').removeClass('d-none');
-                $('#error-alert').addClass('d-none');
+                console.log(response);
+                $('#success-alert').removeClass('d-none'); // show success alert
+                $('#error-alert').addClass('d-none'); // hide error alert
             },
-            error: function(xhr, status, error) {
-                $('#error-alert').removeClass('d-none');
-                $('#success-alert').addClass('d-none');
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                $('#error-alert').removeClass('d-none'); // show error alert
+                $('#success-alert').addClass('d-none'); // hide success alert
             }
         });
     });
