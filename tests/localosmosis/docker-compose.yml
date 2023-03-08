@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+
+  osmosisd:
+    image: osmolabs/osmosis:14.0.1-alpine
+    container_name: localosmosis
+    volumes:
+      - ./scripts/setup.sh:/osmosis/setup.sh
+      - $HOME/.osmosisd-local/:/osmosis/.osmosisd/
+    entrypoint:
+      - /osmosis/setup.sh
+    ports:
+      - 26657:26657
+      - 1317:1317
+      - 9090:9090
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: on-failure
+    ports:
+      - "6379:6379"
