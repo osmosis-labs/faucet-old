@@ -12,7 +12,7 @@ body {
 }
 
 .card-body {
-    padding: 2rem;
+    padding: 1rem;
 }
 
 .form-control {
@@ -30,7 +30,7 @@ body {
 
 .form-control::placeholder {
     color: rgba(255, 255, 255, 0.7);
-  }
+}
 
 #submit-button {
     background-color: #9026a1;
@@ -80,8 +80,8 @@ body {
 }
 
 .osmosis-logo {
-    width: 100px;
-    height: 100px;
-    margin: 0 auto 2rem;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1rem;
     display: block;
 }
