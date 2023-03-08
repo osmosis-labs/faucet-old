@@ -42,7 +42,8 @@ def is_valid_osmosis_address(address: str) -> bool:
 def fund():
     try:
         osmosis_address = request.args.get('address')
-        osmosis_address = 'osmo12smx2wdlyttvyzvzg54y2vnqwq2qjateuf7thj'
+
+        # osmo1c8yy27awfzgfpc7wscqek04p7t2ljyuwh7a6t7
 
         if not osmosis_address:
             raise BadRequest('Osmosis address is required')
@@ -53,11 +54,11 @@ def fund():
         # Check 1: Check if the address has already enough uosmo
         balance = ledger_client.query_bank_balance(osmosis_address)
         if balance >= MAX_FUNDING_AMOUNT:
-            raise BadRequest('Osmosis address already funded')
+            raise BadRequest('Osmosis has already enough tokens')
         
         # Check 2: Check if the address has already been funded in the last 24 hours
-        # if redis_client.get(osmosis_address):
-        #     raise BadRequest('Osmosis address already funded in the last 24 hours')
+        if redis_client.get(osmosis_address):
+            raise BadRequest('Osmosis address already funded in the last 24 hours')
 
         # Check 3: Check the number of requests made by that IP in the last 24 hours
 
@@ -70,7 +71,7 @@ def fund():
         tx.wait_to_complete()
 
         # Mark the address as funded in Redis
-        # redis_client.setex(osmosis_address, 86400, 'funded')
+        redis_client.setex(osmosis_address, 86400, 'funded')
 
         return jsonify({'message': 'Successfully funded Osmosis address: {}'.format(osmosis_address)})
     except BadRequest as e:
