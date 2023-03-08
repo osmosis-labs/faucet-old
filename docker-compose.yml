@@ -1,0 +1,46 @@
+version: "3"
+
+services:
+
+  osmosisd:
+    image: osmolabs/osmosis:14.0.1-alpine
+    container_name: localosmosis
+    volumes:
+      - ./tests/localosmosis/scripts/setup.sh:/osmosis/setup.sh
+      - $HOME/.osmosisd-local/:/osmosis/.osmosisd/
+    entrypoint:
+      - /osmosis/setup.sh
+    ports:
+      - 26657:26657
+      - 1317:1317
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: on-failure
+    ports:
+      - "6379:6379"
+
+  faucet:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: faucet
+    restart: on-failure
+    environment:
+      MNEMONIC: "bottom loan skill merry east cradle onion journey palm apology verb edit desert impose absurd oil bubble sweet glove shallow size build burst effort"
+      FUNDING_AMOUNT: 100000000
+      MAX_FUNDING_AMOUNT: 300000000
+      MAX_REQUESTS_PER_IP: 20
+      PORT: 8080
+      CHAIN_ID: "localosmosis"
+      REST_NODE: "http://osmosisd:1317"
+      DENOM: "uosmo"
+      ADDRESS_PREFIX: "osmo"
+      REDIS_HOST: "redis"
+      REDIS_PORT: 6379
+    depends_on:
+      - osmosisd
+      - redis
+    ports:
+      - "8080:8080"
