@@ -1,4 +1,6 @@
 import os
+import logging
+
 
 from flask import Flask
 from flask import request, jsonify, render_template
@@ -9,6 +11,9 @@ from config.wallet import initialize_wallet
 from config.ledger_client import initialize_ledger_client
 
 app = Flask(__name__, static_url_path='/static')
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
 
 @app.before_first_request
 def run_on_startup():
@@ -43,32 +48,44 @@ def fund():
     try:
         osmosis_address = request.args.get('address')
 
-        # osmo1c8yy27awfzgfpc7wscqek04p7t2ljyuwh7a6t7
-
         if not osmosis_address:
+            logging.error("Osmosis address is required")
             raise BadRequest('Osmosis address is required')
 
         if not is_valid_osmosis_address(osmosis_address):
+            logging.error("Osmosis address is invalid")
             raise BadRequest('Osmosis address is invalid')
-
-        # Check 1: Check if the address has already enough uosmo
-        balance = ledger_client.query_bank_balance(osmosis_address)
-        if balance >= MAX_FUNDING_AMOUNT:
-            raise BadRequest('Osmosis has already enough tokens')
         
-        # Check 2: Check if the address has already been funded in the last 24 hours
+        logging.info(f"Received funding request for address: {osmosis_address}")
+
+        # Check 1: Check if the address has already been funded in the last 24 hours
         if redis_client.get(osmosis_address):
             raise BadRequest('Osmosis address already funded in the last 24 hours')
+        
+        # Check 2: Check if the address has already enough uosmo
+        balance = ledger_client.query_bank_balance(osmosis_address)
+        logging.debug(f"Address balance: {balance}")
 
+        if balance >= MAX_FUNDING_AMOUNT:
+            logging.info(f"Address already funded. Balance: {balance}")
+            raise BadRequest('Osmosis has already enough tokens')
+        
         # Check 3: Check the number of requests made by that IP in the last 24 hours
+        # TODO: Implement this
 
         # Check 4: Check the amount of uosmo sent in the last 24 hours by the faucet overall
-        
+        # TODO: Implement this
+
         # Fund the address
+        logging.debug("Sending funds to address...")
         tx = ledger_client.send_tokens(osmosis_address, FUNDING_AMOUNT, "uosmo", wallet)
+        logging.debug("Funds sent.")
 
         # block until the transaction has been successful or failed
+        logging.debug("Waiting for transaction...")
         tx.wait_to_complete()
+        logging.info(f"Successfully funded Osmosis address: {osmosis_address}")
+        
 
         # Mark the address as funded in Redis
         redis_client.setex(osmosis_address, 86400, 'funded')
