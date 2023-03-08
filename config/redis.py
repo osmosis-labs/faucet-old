@@ -1,9 +1,7 @@
-import os
+from config import REDIS_HOST, REDIS_PORT
 import redis
 
 def initialize_redis():
-    REDIS_HOST = os.environ.get('REDIS_HOST', 'localhost')
-    REDIS_PORT = os.environ.get('REDIS_PORT', 6379)
 
     try:
         redis_client = redis.Redis(host=REDIS_HOST, port=REDIS_PORT)

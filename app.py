@@ -1,20 +1,20 @@
-import os
-import logging
-
 from flask import Flask
 from flask import request, jsonify, render_template
 from werkzeug.exceptions import BadRequest
 
+from datetime import datetime
+
+from utils.utils import is_valid_osmosis_address
 from config.redis import initialize_redis
 from config.wallet import initialize_wallet
 from config.ledger_client import initialize_ledger_client
+from config.config import FUNDING_AMOUNT, MAX_FUNDING_AMOUNT, MAX_REQUESTS_PER_IP, PORT
 
 app = Flask(__name__, static_url_path='/static')
 
 @app.before_first_request
 def run_on_startup():
     global redis_client, wallet, ledger_client
-    global FUNDING_AMOUNT, MAX_FUNDING_AMOUNT
 
     # Set up Redis connection
     redis_client = initialize_redis()
@@ -25,19 +25,6 @@ def run_on_startup():
     # Create client
     ledger_client = initialize_ledger_client()
 
-    # Other configuration variables
-    FUNDING_AMOUNT = int(os.environ.get('FUNDING_AMOUNT', '100000000'))
-    MAX_FUNDING_AMOUNT = int(os.environ.get('MAX_FUNDING_AMOUNT', '300000000'))
-
-def is_valid_osmosis_address(address: str) -> bool:
-    if len(address) != 43 or not address.startswith("osmo"):
-        return False
-
-    alphabet = "0123456789abcdefghijklmnopqrstuvwxyz"
-    for i in range(4, 43):
-        if address[i] not in alphabet:
-            return False
-    return True
 
 @app.route('/fund', methods=['GET'])
 def fund():
@@ -67,7 +54,18 @@ def fund():
             raise BadRequest('Osmosis has already enough tokens')
         
         # Check 3: Check the number of requests made by that IP in the last 24 hours
-        # TODO: Implement this
+        ip_address = request.headers.get('X-Forwarded-For', request.remote_addr)
+        ip_key = f"{ip_address}:{datetime.now().strftime('%Y-%m-%d')}"
+        ip_count = redis_client.get(ip_key)
+
+        if ip_count is not None and int(ip_count) >= MAX_REQUESTS_PER_IP:
+            app.logger.info(f"IP address has already made {MAX_REQUESTS_PER_IP} requests. IP: {ip_address}")
+            raise BadRequest('Too many requests from your IP address')
+        
+        # Increment the number of requests made by this IP
+        redis_client.incr(ip_key)
+        # Expire the key after 24 hours
+        redis_client.expire(ip_key, 86400)
 
         # Check 4: Check the amount of uosmo sent in the last 24 hours by the faucet overall
         # TODO: Implement this
@@ -81,7 +79,7 @@ def fund():
         app.logger.debug("Waiting for transaction...")
         tx.wait_to_complete()
         app.logger.info(f"Successfully funded Osmosis address: {osmosis_address}")
-        
+
         # Mark the address as funded in Redis
         redis_client.setex(osmosis_address, 86400, 'funded')
 
@@ -96,5 +94,6 @@ def fund():
 def index():
     return render_template('index.html')
 
+
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=False, port=PORT)

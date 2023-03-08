@@ -1,12 +1,9 @@
-import os
 from cosmpy.aerial.client import LedgerClient
 from cosmpy.aerial.config import NetworkConfig
 
-def initialize_ledger_client():
-    CHAIN_ID = os.environ.get('CHAIN_ID', 'localosmosis')
-    REST_NODE = os.environ.get('REST_NODE', 'http://localhost:1317')
-    DENOM = os.environ.get('DENOM', 'uosmo')
+from config import CHAIN_ID, REST_NODE, DENOM
 
+def initialize_ledger_client():
     try:
         cfg = NetworkConfig(
             chain_id=CHAIN_ID,
