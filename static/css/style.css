@@ -8,7 +8,7 @@ body {
 .card {
     border: none;
     border-radius: 10px;
-    background-color: rgba(14, 11, 35, 0.9); 
+    background-color: rgba(14, 11, 35, 0.7); 
 }
 
 .card-body {
@@ -19,6 +19,7 @@ body {
     background-color: rgba(255, 255, 255, 0.3);
     color: #fff;
     border: none;
+    height: 60px
 }
 
 .form-control:focus {
@@ -27,13 +28,17 @@ body {
     box-shadow: none;
 }
 
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
 .btn-primary {
-    background-color: #05ce78;
+    background-color: #9026a1;
     border: none;
 }
 
 .btn-primary:hover {
-    background-color: #068a5a;
+    background-color: #b700d3;
 }
 
 .alert {
