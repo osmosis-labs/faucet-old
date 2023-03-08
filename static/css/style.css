@@ -32,35 +32,51 @@ body {
     color: rgba(255, 255, 255, 0.7);
   }
 
-.btn-primary {
+#submit-button {
     background-color: #9026a1;
     border: none;
+    color: #fff;
 }
 
-.btn-primary:hover {
+#submit-button:hover {
     background-color: #b700d3;
+    color: #fff;
+}
+
+#submit-button:active {
+    background-color: #b700d3;
+    color: #fff;
+}
+
+#submit-button:disabled {
+    background-color: #5c146f;
+    color: #fff;
 }
 
 .alert {
-    margin-top: 1rem;
+    margin-top: 2rem;
 }
 
 .alert-success {
     background-color: #0eb05f;
     border-color: #0eb05f;
+    color: #f5f5f5;
 }
 
 .alert-success:hover {
     background-color: #18a669;
+    color: #f5f5f5;
 }
 
 .alert-danger {
     background-color: #ff5a5a;
     border-color: #ff5a5a;
+    color: #f5f5f5;
 }
 
 .alert-danger:hover {
     background-color: #e34b4b;
+    color: #f5f5f5;
 }
 
 .osmosis-logo {
